@@ -28,11 +28,9 @@ namespace OGame
 
                 driver.Quit();
 
-                Thread.Sleep(60000);
+                Thread.Sleep(600000);
                 Console.WriteLine("Everything went fine.");
                 Console.ReadKey();
-
-                break;
             }
                     
 
