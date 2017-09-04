@@ -19,6 +19,7 @@ namespace OGame
         {
             while (true)
             {
+                Console.WriteLine(DateTime.Now.ToString());
                 ChromeDriver driver = new ChromeDriver();
                 driver.Manage().Window.Maximize();
 
@@ -35,7 +36,7 @@ namespace OGame
 
                         int attackHour = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[0]);
                         int attackMinute = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[1]);
-                        int attackSecond = Convert.ToInt32(attackTime.Replace("[", "").Replace(" Czas", "").Split(':')[2]);
+                        int attackSecond = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[2]);
 
                         DateTime now = DateTime.Now;
 
@@ -64,7 +65,7 @@ namespace OGame
                 }
 
                 driver.Quit();
-                Thread.Sleep(60000);
+                Thread.Sleep(6000);
             }
         }
     }

@@ -63,13 +63,12 @@ namespace OGame
 
                 foreach (var currentEvent in events)
                 {
-                    var fromPlanet = currentEvent.FindElement(By.XPath("//td[4]"));
-
-                    if (!fromPlanet.Text.Contains("Columbo 6"))
+                    var fromPlanet = currentEvent.FindElement(By.XPath("./td[4]"));
+                    if (!fromPlanet.Text.Contains("Columbo"))
                     {
-                        string attackTime = currentEvent.FindElement(By.XPath("//td[2]")).Text;
-                        string attacker = currentEvent.FindElement(By.XPath("//td[5]")).Text;
-                        string attackedPlanet = currentEvent.FindElement(By.XPath("//td[9]")).Text;
+                        string attackTime = currentEvent.FindElement(By.XPath("./td[2]")).Text.Replace(" Czas", "");
+                        string attacker = currentEvent.FindElement(By.XPath("./td[5]")).Text;
+                        string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
 
                         attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
                     }
@@ -81,9 +80,9 @@ namespace OGame
         public void EscapeFromPlanet(Attack attack)
         {
             string coords = attack.attackedPlanet.Replace("[", "").Replace("]", "");
-            string galaxy  = attack.attackedPlanet.Split(':')[0];
-            string sunSystem = attack.attackedPlanet.Split(':')[1];
-            string planetPosition = attack.attackedPlanet.Split(':')[2];
+            string galaxy  = coords.Split(':')[0];
+            string sunSystem = coords.Split(':')[1];
+            string planetPosition = coords.Split(':')[2];
 
             SelectPlanet(attack.attackedPlanet);
 
@@ -104,22 +103,27 @@ namespace OGame
                 var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
                 usefulLinksSelect.Click();
 
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
                 var firstPlanet = _driver.FindElement(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]"));
+                string targetPlanet = firstPlanet.Text;
                 firstPlanet.Click();
 
+                Thread.Sleep(300);
                 var continueButton2 = _driver.FindElement(By.Id("continue"));
                 continueButton2.Click();
 
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
                 var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
                 stayOnThePlanetOption.Click();
 
+                Thread.Sleep(300);
                 var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
                 packEverythingOnShips.Click();
 
                 var sendOutFleet = _driver.FindElement(By.Id("start"));
                 sendOutFleet.Click();
 
-                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + firstPlanet.Text);
+                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + targetPlanet);
 
                 attack.safe = true;
             }
