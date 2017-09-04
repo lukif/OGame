@@ -48,11 +48,16 @@ namespace OGame
 
                         var diffInSeconds = (attackTimeDT - now).TotalSeconds;
 
-                        while (diffInSeconds >= 30)
+                        while (diffInSeconds >= 60)
                         {
                             Console.WriteLine("Seconds to atttack: " + diffInSeconds);
                             Thread.Sleep(5000);
                             diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
+                        }
+
+                        if (!game.CheckOfLoggedIn())
+                        {
+                            game.Login(user, password, server);
                         }
 
                         game.EscapeFromPlanet(attack);
@@ -64,6 +69,11 @@ namespace OGame
                         }
 
                         Console.WriteLine("Attack is finished.");
+
+                        if (!game.CheckOfLoggedIn())
+                        {
+                            game.Login(user, password, server);
+                        }
 
                         game.BackOnPlanet(attack);
                     }

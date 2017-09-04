@@ -34,7 +34,12 @@ namespace OGame
             _driver.Navigate().GoToUrl(OGameURL);
 
             var LoginPopup = _driver.FindElement(By.Id("loginBtn"));
-            LoginPopup.Click();
+            if (LoginPopup.Text != "Zamknij")
+            {
+                LoginPopup.Click();
+            }
+
+            string asdsad = LoginPopup.Text;
 
             var loginField = _driver.FindElement(By.Id("usernameLogin"));
             var passwordField = _driver.FindElement(By.Id("passwordLogin"));
@@ -171,5 +176,21 @@ namespace OGame
 
             return listOfPlanets;
         }
+
+        public bool CheckOfLoggedIn()
+        {
+            var logiLink = _driver.FindElement(By.Id("logoLink"));
+            logiLink.Click();
+
+            if (_driver.Url == "https://pl.ogame.gameforge.com/")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
     }
 }
