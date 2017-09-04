@@ -66,7 +66,10 @@ namespace OGame
                 }
 
                 driver.Quit();
-                Thread.Sleep(90000);
+
+                Random r = new Random();
+                int sleepTime = r.Next(600000, 1000000);
+                Thread.Sleep(sleepTime);
             }
         }
     }
