@@ -137,13 +137,14 @@ namespace OGame
             var fleetStatusButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/span/a"));
             fleetStatusButton.Click();
 
-            if (_driver.FindElements(By.XPath("//span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a")).Count != 0)
+            planetDestinationWhileEscape = planetDestinationWhileEscape.Split('[').Last();
+
+            if (_driver.FindElements(By.XPath("//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape + "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a")).Count != 0)
             {
-                planetDestinationWhileEscape = planetDestinationWhileEscape.Split('[').Last();
                 var returnButton = _driver.FindElement(By.XPath("//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape + "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a"));
                 returnButton.Click();
 
-                Console.WriteLine("Fleet is flying back to planet " + attack.attackedPlanet);
+                Console.WriteLine("Fleet is flying back from [" + planetDestinationWhileEscape + " to planet " + attack.attackedPlanet);
             }
             else
             {
