@@ -44,12 +44,13 @@ namespace OGame
 
                         var diffInSeconds = (attackTimeDT - now).TotalSeconds;
 
-                        while (diffInSeconds >= 60)
+                        while (diffInSeconds >= 30)
                         {
                             Console.WriteLine("Seconds to atttack: " + diffInSeconds);
                             Thread.Sleep(5000);
                             diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
                         }
+
                         game.EscapeFromPlanet(attack);
 
                         while (diffInSeconds > 0)
@@ -65,7 +66,7 @@ namespace OGame
                 }
 
                 driver.Quit();
-                Thread.Sleep(6000);
+                Thread.Sleep(90000);
             }
         }
     }
