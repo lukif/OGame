@@ -23,19 +23,49 @@ namespace OGame
                 driver.Manage().Window.Maximize();
 
                 OgameAutomation game = new OgameAutomation(driver);
+
                 game.Login("Captain Columbo", "QWEqwe123");
-                game.CheckIfEnbemyAttacks();
+                List<Attack> attacks = game.GetAttacks();
+
+                if (attacks.Count != 0)
+                {
+                    foreach (var attack in attacks)
+                    {
+                        string attackTime = attack.attackTime;
+
+                        int attackHour = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[0]);
+                        int attackMinute = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[1]);
+                        int attackSecond = Convert.ToInt32(attackTime.Replace("[", "").Replace(" Czas", "").Split(':')[2]);
+
+                        DateTime now = DateTime.Now;
+
+                        DateTime attackTimeDT = new DateTime(now.Year, now.Month, now.Day, attackHour, attackMinute, attackSecond);
+
+                        var diffInSeconds = (attackTimeDT - now).TotalSeconds;
+
+                        while (diffInSeconds >= 60)
+                        {
+                            Console.WriteLine("Seconds to atttack: " + diffInSeconds);
+                            Thread.Sleep(5000);
+                            diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
+                        }
+                        game.EscapeFromPlanet(attack);
+
+                        while (diffInSeconds > 0)
+                        {
+                            Thread.Sleep(5000);
+                            diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
+                        }
+
+                        Console.WriteLine("Attack is finished.");
+
+                        game.BackOnPlanet(attack);
+                    }
+                }
 
                 driver.Quit();
-
                 Thread.Sleep(60000);
-                Console.WriteLine("Everything went fine.");
-                Console.ReadKey();
-
-                break;
             }
-                    
-
         }
     }
 }
