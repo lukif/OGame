@@ -18,6 +18,7 @@ namespace OGame
         private string OGameURL;
         private WebDriverWait wait;
         private List<Attack> attacks;
+        private List<string> listOfPlanets;
 
 
         public OgameAutomation(ChromeDriver driver)
@@ -44,6 +45,7 @@ namespace OGame
             serverSelect.SendKeys(serverName);
             loginButton.Click();
             Thread.Sleep(2000);
+            listOfPlanets = GetPlanetsList();
         }
 
         public List<Attack> GetAttacks()
@@ -63,8 +65,8 @@ namespace OGame
 
                 foreach (var currentEvent in events)
                 {
-                    var fromPlanet = currentEvent.FindElement(By.XPath("./td[4]"));
-                    if (!fromPlanet.Text.Contains("Columbo"))
+                    var fromPlanet = currentEvent.FindElement(By.XPath("./td[5]"));
+                    if (!listOfPlanets.Contains(fromPlanet.Text))
                     {
                         string attackTime = currentEvent.FindElement(By.XPath("./td[2]")).Text.Replace(" Czas", "");
                         string attacker = currentEvent.FindElement(By.XPath("./td[5]")).Text;
@@ -151,6 +153,19 @@ namespace OGame
             string planetXPath = "//a[span='" + planetCoords + "']";
             var planetToSelect = _driver.FindElement(By.XPath(planetXPath));
             planetToSelect.Click();
+        }
+
+        public List<string> GetPlanetsList()
+        {
+            var planets = _driver.FindElements(By.XPath("//*[@id='planetList']/div/a/span[2]"));
+            List<string> listOfPlanets = new List<string>();
+
+            foreach (var planet in planets)
+            {
+               listOfPlanets.Add(planet.Text);
+            }
+
+            return listOfPlanets;
         }
     }
 }
