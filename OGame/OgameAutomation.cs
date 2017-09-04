@@ -86,7 +86,6 @@ namespace OGame
             string sunSystem = attack.attackedPlanet.Split(':')[1];
             string planetPosition = attack.attackedPlanet.Split(':')[2];
 
-
             SelectPlanet(attack.attackedPlanet);
 
             Thread.Sleep(1000);
