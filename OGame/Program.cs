@@ -17,6 +17,10 @@ namespace OGame
     {
         static void Main(string[] args)
         {
+            string user = System.Configuration.ConfigurationManager.AppSettings["user"];
+            string password = System.Configuration.ConfigurationManager.AppSettings["password"];
+            string server = System.Configuration.ConfigurationManager.AppSettings["server"];
+
             while (true)
             {
                 Console.WriteLine(DateTime.Now.ToString());
@@ -25,7 +29,7 @@ namespace OGame
 
                 OgameAutomation game = new OgameAutomation(driver);
 
-                game.Login("Captain Columbo", "QWEqwe123");
+                game.Login(user, password, server);
                 List<Attack> attacks = game.GetAttacks();
 
                 if (attacks.Count != 0)
