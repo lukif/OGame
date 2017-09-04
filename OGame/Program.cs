@@ -32,8 +32,6 @@ namespace OGame
                 Console.WriteLine("Everything went fine.");
                 Console.ReadKey();
             }
-                    
-
         }
     }
 }
