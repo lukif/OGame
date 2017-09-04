@@ -75,7 +75,6 @@ namespace OGame
                     }
                 }
             }
-
             return attacks;
         }
 
