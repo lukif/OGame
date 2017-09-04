@@ -19,6 +19,7 @@ namespace OGame
         private WebDriverWait wait;
         private List<Attack> attacks;
         private List<string> listOfPlanets;
+        private string planetDestinationWhileEscape;
 
 
         public OgameAutomation(ChromeDriver driver)
@@ -107,7 +108,7 @@ namespace OGame
 
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
                 var firstPlanet = _driver.FindElement(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]"));
-                string targetPlanet = firstPlanet.Text;
+                planetDestinationWhileEscape = firstPlanet.Text;
                 firstPlanet.Click();
 
                 Thread.Sleep(300);
@@ -125,7 +126,7 @@ namespace OGame
                 var sendOutFleet = _driver.FindElement(By.Id("start"));
                 sendOutFleet.Click();
 
-                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + targetPlanet);
+                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + planetDestinationWhileEscape);
 
                 attack.safe = true;
             }
@@ -138,9 +139,11 @@ namespace OGame
 
             if (_driver.FindElements(By.XPath("//span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a")).Count != 0)
             {
-                var returnButton = _driver.FindElement(By.XPath("//span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a"));
+                planetDestinationWhileEscape = planetDestinationWhileEscape.Split('[').Last();
+                var returnButton = _driver.FindElement(By.XPath("//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape + "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a"));
                 returnButton.Click();
-                Console.WriteLine("Fleet is flying back to planet");
+
+                Console.WriteLine("Fleet is flying back to planet " + attack.attackedPlanet);
             }
             else
             {

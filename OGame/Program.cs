@@ -34,9 +34,9 @@ namespace OGame
                     {
                         string attackTime = attack.attackTime;
 
-                        int attackHour = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[0]);
-                        int attackMinute = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[1]);
-                        int attackSecond = Convert.ToInt32(attackTime.Replace("[", "").Split(':')[2]);
+                        int attackHour = Convert.ToInt32(attackTime.Split(':')[0]);
+                        int attackMinute = Convert.ToInt32(attackTime.Split(':')[1]);
+                        int attackSecond = Convert.ToInt32(attackTime.Split(':')[2]);
 
                         DateTime now = DateTime.Now;
 
