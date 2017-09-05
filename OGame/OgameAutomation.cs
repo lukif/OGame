@@ -80,7 +80,11 @@ namespace OGame
                     }
                 }
             }
-            Console.WriteLine("There is no mission in space at the moment.");
+            else
+            {
+                Console.WriteLine("There is no mission in space at the moment.");
+            }
+
             return attacks;
         }
 
