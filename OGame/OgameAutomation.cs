@@ -39,8 +39,6 @@ namespace OGame
                 LoginPopup.Click();
             }
 
-            string asdsad = LoginPopup.Text;
-
             var loginField = _driver.FindElement(By.Id("usernameLogin"));
             var passwordField = _driver.FindElement(By.Id("passwordLogin"));
             var serverSelect = _driver.FindElement(By.Id("serverLogin"));
@@ -57,8 +55,6 @@ namespace OGame
         public List<Attack> GetAttacks()
         {
             attacks = new List<Attack>();
-
-            int aaaa = _driver.FindElements(By.Id("js_eventDetailsClosed")).Count;
 
             if (_driver.FindElements(By.Id("js_eventDetailsClosed")).Count > 0)
             {
