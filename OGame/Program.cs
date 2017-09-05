@@ -23,7 +23,7 @@ namespace OGame
 
             while (true)
             {
-                Console.WriteLine(DateTime.Now.ToString());
+                Console.WriteLine(DateTime.Now);
                 ChromeDriver driver = new ChromeDriver();
                 driver.Manage().Window.Maximize();
 
@@ -84,7 +84,7 @@ namespace OGame
                 Random r = new Random();
                 int randomSleepTime = r.Next(600000, 1000000);
                 string waitTo = DateTime.Now.AddSeconds(Math.Round((double)randomSleepTime/1000)).ToString();
-                Console.WriteLine("Next check in: " + randomSleepTime + " seconds. (" + waitTo + ")");
+                Console.WriteLine("Next check in: " + Math.Round((double)randomSleepTime / 1000) + " seconds. (" + waitTo + ")");
                 Thread.Sleep(randomSleepTime);
             }
         }

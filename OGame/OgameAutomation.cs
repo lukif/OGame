@@ -131,9 +131,9 @@ namespace OGame
                 var sendOutFleet = _driver.FindElement(By.Id("start"));
                 sendOutFleet.Click();
 
-                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + planetDestinationWhileEscape);
-
                 attack.safe = true;
+
+                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + planetDestinationWhileEscape);
             }
         }
 
@@ -144,9 +144,13 @@ namespace OGame
 
             planetDestinationWhileEscape = planetDestinationWhileEscape.Split('[').Last();
 
-            if (_driver.FindElements(By.XPath("//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape + "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a")).Count != 0)
+            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape +
+                                       "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet +
+                                       "')]/../../../span[9]/a";
+
+            if (_driver.FindElements(By.XPath(returnButtonXpath)).Count != 0)
             {
-                var returnButton = _driver.FindElement(By.XPath("//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape + "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet + "')]/../../../span[9]/a"));
+                var returnButton = _driver.FindElement(By.XPath(returnButtonXpath));
                 returnButton.Click();
 
                 Console.WriteLine("Fleet is flying back from [" + planetDestinationWhileEscape + " to planet " + attack.attackedPlanet);
