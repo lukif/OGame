@@ -65,6 +65,8 @@ namespace OGame
                 wait.Until(ExpectedConditions.ElementExists(By.Id("eventContent")));
                 var events = _driver.FindElements(By.XPath("//*[@id='eventContent']/tbody/tr"));
 
+                Console.WriteLine("Currently we have {0} mission(s) in space.", events.Count);
+
                 foreach (var currentEvent in events)
                 {
                     var fromPlanet = currentEvent.FindElement(By.XPath("./td[5]"));
@@ -78,6 +80,7 @@ namespace OGame
                     }
                 }
             }
+            Console.WriteLine("There is no mission in space at the moment.");
             return attacks;
         }
 
