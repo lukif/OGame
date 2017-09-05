@@ -26,7 +26,7 @@ namespace OGame
         {
             _driver = driver;
             OGameURL = "http://ogame.pl";
-            wait = new WebDriverWait(_driver, new TimeSpan(0, 0, 30));
+            wait = new WebDriverWait(_driver, new TimeSpan(0, 0, 60));
         }
 
         public void Login(string user, string password, string serverName = "Tarazed")

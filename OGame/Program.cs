@@ -83,7 +83,8 @@ namespace OGame
 
                 Random r = new Random();
                 int randomSleepTime = r.Next(600000, 1000000);
-                Console.WriteLine("Wait: " + randomSleepTime + " seconds. (" + DateTime.Now.AddSeconds(randomSleepTime).ToShortTimeString() + ")");
+                string waitTo = DateTime.Now.AddSeconds(Math.Round((double)randomSleepTime/1000)).ToString();
+                Console.WriteLine("Next check in: " + randomSleepTime + " seconds. (" + waitTo + ")");
                 Thread.Sleep(randomSleepTime);
             }
         }
