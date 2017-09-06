@@ -136,7 +136,7 @@ namespace OGame
 
                 attack.safe = true;
 
-                Console.WriteLine("Fleet from " + attack.attackedPlanet + " is safe and flies to " + planetDestinationWhileEscape);
+                Console.WriteLine("Fleet from {0} is safe and flies to {1}", attack.attackedPlanet, planetDestinationWhileEscape);
             }
         }
 
@@ -145,9 +145,9 @@ namespace OGame
             var fleetStatusButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/span/a"));
             fleetStatusButton.Click();
 
-            planetDestinationWhileEscape = planetDestinationWhileEscape.Split('[').Last();
+            planetDestinationWhileEscape = "[" + planetDestinationWhileEscape.Split('[').Last();
 
-            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='[" + planetDestinationWhileEscape +
+            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='" + planetDestinationWhileEscape +
                                        "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet +
                                        "')]/../../../span[9]/a";
 
@@ -156,7 +156,7 @@ namespace OGame
                 var returnButton = _driver.FindElement(By.XPath(returnButtonXpath));
                 returnButton.Click();
 
-                Console.WriteLine("Fleet is flying back from [" + planetDestinationWhileEscape + " to planet " + attack.attackedPlanet);
+                Console.WriteLine("Fleet is flying back from {0} to planet {1}", planetDestinationWhileEscape, attack.attackedPlanet);
             }
             else
             {

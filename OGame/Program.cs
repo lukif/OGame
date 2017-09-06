@@ -49,7 +49,7 @@ namespace OGame
 
                         while (diffInSeconds >= 60)
                         {
-                            Console.WriteLine("Seconds to atttack: " + diffInSeconds);
+                            Console.WriteLine("Time to atttack: {0}s", Math.Round(diffInSeconds));
                             Thread.Sleep(5000);
                             diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
                         }
