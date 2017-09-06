@@ -15,24 +15,24 @@ namespace OGame
 {
     class OgameAutomation
     {
-        private ChromeDriver _driver;
-        private string OGameURL;
-        private WebDriverWait wait;
-        private List<Attack> attacks;
-        private List<string> listOfPlanets;
-        private string planetDestinationWhileEscape;
+        private readonly ChromeDriver _driver;
+        private readonly string _OGameURL;
+        private readonly WebDriverWait _wait;
+        private List<Attack> _attacks;
+        private List<string> _listOfPlanets;
+        private string _planetDestinationWhileEscape;
 
 
         public OgameAutomation(ChromeDriver driver)
         {
             _driver = driver;
-            OGameURL = ConfigurationManager.AppSettings["url"]; ;
-            wait = new WebDriverWait(_driver, new TimeSpan(0, 0, 60));
+            _OGameURL = ConfigurationManager.AppSettings["url"]; ;
+            _wait = new WebDriverWait(_driver, new TimeSpan(0, 0, 60));
         }
 
         public void Login(string user, string password, string serverName = "Tarazed")
         {
-            _driver.Navigate().GoToUrl(OGameURL);
+            _driver.Navigate().GoToUrl(_OGameURL);
 
             var LoginPopup = _driver.FindElement(By.Id("loginBtn"));
             if (LoginPopup.Text != "Zamknij")
@@ -50,12 +50,12 @@ namespace OGame
             serverSelect.SendKeys(serverName);
             loginButton.Click();
             Thread.Sleep(2000);
-            listOfPlanets = GetPlanetsList();
+            _listOfPlanets = GetPlanetList();
         }
 
         public List<Attack> GetAttacks()
         {
-            attacks = new List<Attack>();
+            _attacks = new List<Attack>();
 
             if (_driver.FindElements(By.XPath("//*[@id='eventboxFilled']/p/p/span[contains(.,'Następna')]")).Count > 0)
             {
@@ -63,7 +63,7 @@ namespace OGame
                 expandEventsList.Click();
                 Thread.Sleep(1000);
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("eventContent")));
+                _wait.Until(ExpectedConditions.ElementExists(By.Id("eventContent")));
                 var events = _driver.FindElements(By.XPath("//*[@id='eventContent']/tbody/tr"));
 
                 Console.WriteLine("Currently we have {0} mission(s) in space.", events.Count);
@@ -71,13 +71,13 @@ namespace OGame
                 foreach (var currentEvent in events)
                 {
                     var fromPlanet = currentEvent.FindElement(By.XPath("./td[5]"));
-                    if (!listOfPlanets.Contains(fromPlanet.Text))
+                    if (!_listOfPlanets.Contains(fromPlanet.Text))
                     {
                         string attackTime = currentEvent.FindElement(By.XPath("./td[2]")).Text.Replace(" Czas", "");
                         string attacker = currentEvent.FindElement(By.XPath("./td[5]")).Text;
                         string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
 
-                        attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
+                        _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
                     }
                 }
             }
@@ -86,15 +86,15 @@ namespace OGame
                 Console.WriteLine("There is no mission in space at the moment.");
             }
 
-            return attacks;
+            return _attacks;
         }
 
         public void EscapeFromPlanet(Attack attack)
         {
-            string coords = attack.attackedPlanet.Replace("[", "").Replace("]", "");
-            string galaxy  = coords.Split(':')[0];
-            string sunSystem = coords.Split(':')[1];
-            string planetPosition = coords.Split(':')[2];
+            // string coords = attack.attackedPlanet.Replace("[", "").Replace("]", "");
+            //string galaxy  = coords.Split(':')[0];
+            //string sunSystem = coords.Split(':')[1];
+            //string planetPosition = coords.Split(':')[2];
 
             SelectPlanet(attack.attackedPlanet);
 
@@ -115,16 +115,16 @@ namespace OGame
                 var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
                 usefulLinksSelect.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
+                _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
                 var firstPlanet = _driver.FindElement(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]"));
-                planetDestinationWhileEscape = firstPlanet.Text;
+                _planetDestinationWhileEscape = firstPlanet.Text;
                 firstPlanet.Click();
 
                 Thread.Sleep(300);
                 var continueButton2 = _driver.FindElement(By.Id("continue"));
                 continueButton2.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
+                _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
                 var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
                 stayOnThePlanetOption.Click();
 
@@ -137,7 +137,7 @@ namespace OGame
 
                 attack.safe = true;
 
-                Console.WriteLine("Fleet from {0} is safe and flies to {1}", attack.attackedPlanet, planetDestinationWhileEscape);
+                Console.WriteLine("Fleet from {0} is safe and flies to {1}", attack.attackedPlanet, _planetDestinationWhileEscape);
             }
         }
 
@@ -146,9 +146,9 @@ namespace OGame
             var fleetStatusButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/span/a"));
             fleetStatusButton.Click();
 
-            planetDestinationWhileEscape = "[" + planetDestinationWhileEscape.Split('[').Last();
+            _planetDestinationWhileEscape = "[" + _planetDestinationWhileEscape.Split('[').Last();
 
-            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='" + planetDestinationWhileEscape +
+            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='" + _planetDestinationWhileEscape +
                                        "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet +
                                        "')]/../../../span[9]/a";
 
@@ -157,7 +157,7 @@ namespace OGame
                 var returnButton = _driver.FindElement(By.XPath(returnButtonXpath));
                 returnButton.Click();
 
-                Console.WriteLine("Fleet is flying back from {0} to planet {1}", planetDestinationWhileEscape, attack.attackedPlanet);
+                Console.WriteLine("Fleet is flying back from {0} to planet {1}", _planetDestinationWhileEscape, attack.attackedPlanet);
             }
             else
             {
@@ -172,7 +172,7 @@ namespace OGame
             planetToSelect.Click();
         }
 
-        public List<string> GetPlanetsList()
+        public List<string> GetPlanetList()
         {
             var planets = _driver.FindElements(By.XPath("//*[@id='planetList']/div/a/span[2]"));
             List<string> listOfPlanets = new List<string>();
@@ -190,7 +190,7 @@ namespace OGame
             var logiLink = _driver.FindElement(By.Id("logoLink"));
             logiLink.Click();
 
-            if (_driver.Url == ConfigurationManager.AppSettings["url"])
+            if (_driver.Url == _OGameURL)
             {
                 return false;
             }
