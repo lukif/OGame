@@ -43,7 +43,6 @@ namespace OGame
                         int attackSecond = Convert.ToInt32(attackTime.Split(':')[2]);
 
                         DateTime now = DateTime.Now;
-
                         DateTime attackTimeDT = new DateTime(now.Year, now.Month, now.Day, attackHour, attackMinute, attackSecond);
 
                         var diffInSeconds = (attackTimeDT - now).TotalSeconds;
