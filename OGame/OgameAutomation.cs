@@ -80,6 +80,12 @@ namespace OGame
                         _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
                     }
                 }
+                if (_attacks.Count > 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("{0} incoming attack(s) ", _attacks.Count);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             else
             {
@@ -137,7 +143,9 @@ namespace OGame
 
                 attack.safe = true;
 
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Fleet from {0} is safe and flies to {1}", attack.attackedPlanet, _planetDestinationWhileEscape);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
@@ -157,7 +165,9 @@ namespace OGame
                 var returnButton = _driver.FindElement(By.XPath(returnButtonXpath));
                 returnButton.Click();
 
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Fleet is flying back from {0} to planet {1}", _planetDestinationWhileEscape, attack.attackedPlanet);
+                Console.ForegroundColor = ConsoleColor.White;
             }
             else
             {

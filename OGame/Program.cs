@@ -50,7 +50,9 @@ namespace OGame
 
                         while (diffInSeconds >= 60)
                         {
+                            Console.ForegroundColor = ConsoleColor.Yellow;
                             Console.WriteLine("Time to atttack: {0}s", Math.Round(diffInSeconds));
+                            Console.ForegroundColor = ConsoleColor.White;
                             Thread.Sleep(5000);
                             diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
                         }
@@ -68,7 +70,9 @@ namespace OGame
                             diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
                         }
 
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Attack is finished.");
+                        Console.ForegroundColor = ConsoleColor.White;
 
                         if (!game.CheckOfLoggedIn())
                         {
