@@ -23,7 +23,7 @@ namespace OGame
 
             while (true)
             {
-                Console.WriteLine(DateTime.Now);
+                Console.WriteLine("\n" + DateTime.Now);
                 ChromeDriver driver = new ChromeDriver();
                 driver.Manage().Window.Maximize();
 
