@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -17,9 +18,9 @@ namespace OGame
     {
         static void Main(string[] args)
         {
-            string user = System.Configuration.ConfigurationManager.AppSettings["user"];
-            string password = System.Configuration.ConfigurationManager.AppSettings["password"];
-            string server = System.Configuration.ConfigurationManager.AppSettings["server"];
+            string user = ConfigurationManager.AppSettings["user"];
+            string password = ConfigurationManager.AppSettings["password"];
+            string server = ConfigurationManager.AppSettings["server"];
 
             while (true)
             {

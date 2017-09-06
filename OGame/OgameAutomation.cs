@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -25,7 +26,7 @@ namespace OGame
         public OgameAutomation(ChromeDriver driver)
         {
             _driver = driver;
-            OGameURL = "http://ogame.pl";
+            OGameURL = ConfigurationManager.AppSettings["url"]; ;
             wait = new WebDriverWait(_driver, new TimeSpan(0, 0, 60));
         }
 
@@ -189,7 +190,7 @@ namespace OGame
             var logiLink = _driver.FindElement(By.Id("logoLink"));
             logiLink.Click();
 
-            if (_driver.Url == "https://pl.ogame.gameforge.com/")
+            if (_driver.Url == ConfigurationManager.AppSettings["url"])
             {
                 return false;
             }
