@@ -56,7 +56,7 @@ namespace OGame
         {
             attacks = new List<Attack>();
 
-            if (_driver.FindElements(By.Id("eventboxBlank")).Count == 0)
+            if (_driver.FindElements(By.XPath("//*[@id='eventboxFilled']/p/p/span[contains(.,'Następna')]")).Count > 0)
             {
                 var expandEventsList = _driver.FindElement(By.Id("js_eventDetailsClosed"));
                 expandEventsList.Click();
