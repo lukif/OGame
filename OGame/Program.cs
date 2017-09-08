@@ -44,37 +44,55 @@ namespace OGame
                         int attackSecond = Convert.ToInt32(attackTime.Split(':')[2]);
 
                         DateTime now = DateTime.Now;
-                        DateTime attackTimeDT = new DateTime(now.Year, now.Month, now.Day, attackHour, attackMinute, attackSecond);
+                        DateTime attackTimeDT = new DateTime(now.Year, now.Month, now.Day, attackHour, attackMinute,
+                            attackSecond);
 
                         var diffInSeconds = (attackTimeDT - now).TotalSeconds;
 
                         while (diffInSeconds >= 60)
                         {
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("Time to atttack: {0}s", Math.Round(diffInSeconds));
+                            Console.WriteLine(DateTime.Now + " - Time to atttack: {0}s", Math.Round(diffInSeconds));
                             Console.ForegroundColor = ConsoleColor.White;
                             Thread.Sleep(5000);
                             diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
                         }
 
-                        if (!game.CheckOfLoggedIn())
+                        if (!game.CheckIfLoggedIn())
                         {
                             game.Login(user, password, server);
                         }
 
                         game.EscapeFromPlanet(attack);
+                    }
 
-                        while (diffInSeconds > 0)
-                        {
-                            Thread.Sleep(5000);
-                            diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
-                        }
+                    string lastAttackTime = attacks.Last().attackTime;
 
+                    int lastAttackHour = Convert.ToInt32(lastAttackTime.Split(':')[0]);
+                    int lastAttackMinute = Convert.ToInt32(lastAttackTime.Split(':')[1]);
+                    int lastAttackSecond = Convert.ToInt32(lastAttackTime.Split(':')[2]);
+
+                    DateTime now2 = DateTime.Now;
+                    DateTime lastAttackTimeDT = new DateTime(now2.Year, now2.Month, now2.Day, lastAttackHour, lastAttackMinute, lastAttackSecond);
+
+                    var lastDiffInSeconds = (lastAttackTimeDT - now2).TotalSeconds;
+
+                    while (lastDiffInSeconds > 0)
+                    {
+                        Thread.Sleep(3000);
+                        lastDiffInSeconds = (lastAttackTimeDT - DateTime.Now).TotalSeconds;
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("{0} - Waiting for the end of attack: {1}s", DateTime.Now, Math.Round(lastDiffInSeconds));
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+
+                    foreach (var attack in attacks)
+                    {
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Attack is finished.");
+                        Console.WriteLine(DateTime.Now + " - Attack {0} is finished." , attacks.IndexOf(attack)+1);
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        if (!game.CheckOfLoggedIn())
+                        if (!game.CheckIfLoggedIn())
                         {
                             game.Login(user, password, server);
                         }
@@ -83,13 +101,34 @@ namespace OGame
                     }
                 }
 
-                driver.Quit();
+                if (!game.CheckIfLoggedIn())
+                {
+                    game.Login(user, password, server);
+                }
 
-                Random r = new Random();
-                int randomSleepTime = r.Next(600000, 1000000);
-                string waitTo = DateTime.Now.AddSeconds(Math.Round((double)randomSleepTime/1000)).ToString();
-                Console.WriteLine("Next check in: " + Math.Round((double)randomSleepTime / 1000) + " seconds. (" + waitTo + ")");
-                Thread.Sleep(randomSleepTime);
+                if (game.GetAttacks().Count == 0)
+                {
+                    driver.Quit();
+                    //Random r = new Random();
+                   // int randomSleepTime = r.Next(600000, 1000000);
+                   // string waitTo = DateTime.Now.AddSeconds(Math.Round((double) randomSleepTime / 1000)).ToString();
+                   // Console.WriteLine(DateTime.Now + " - Next check in: " +
+                  //                    Math.Round((double) randomSleepTime / 1000) + " seconds. (" + waitTo + ")");
+                  //  Thread.Sleep(randomSleepTime);
+
+                    int currentMinute = DateTime.Now.Minute;
+
+                    while (currentMinute % 15 != 0)
+                    {
+                        Thread.Sleep(5000);
+                        currentMinute = DateTime.Now.Minute;
+                    }
+                    Thread.Sleep(60000);
+                }
+                else
+                {
+                    driver.Quit();
+                }
             }
         }
     }

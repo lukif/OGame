@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using Selenium;
 using Selenium.Helper;
@@ -40,6 +41,8 @@ namespace OGame
                 LoginPopup.Click();
             }
 
+            Thread.Sleep(1000);
+
             var loginField = _driver.FindElement(By.Id("usernameLogin"));
             var passwordField = _driver.FindElement(By.Id("passwordLogin"));
             var serverSelect = _driver.FindElement(By.Id("serverLogin"));
@@ -59,14 +62,19 @@ namespace OGame
 
             if (_driver.FindElements(By.XPath("//*[@id='eventboxFilled']/p/p/span[contains(.,'Następna')]")).Count > 0)
             {
+
                 var expandEventsList = _driver.FindElement(By.Id("js_eventDetailsClosed"));
-                expandEventsList.Click();
+                var expandEventsList2 = _driver.FindElement(By.Id("js_eventDetailsClosed"));
+                if (expandEventsList.Displayed)
+                {
+                    expandEventsList.Click();
+                }
                 Thread.Sleep(1000);
 
                 _wait.Until(ExpectedConditions.ElementExists(By.Id("eventContent")));
                 var events = _driver.FindElements(By.XPath("//*[@id='eventContent']/tbody/tr"));
 
-                Console.WriteLine("Currently we have {0} mission(s) in space.", events.Count);
+                Console.WriteLine(DateTime.Now + " - Currently we see {0} mission(s) in space.", events.Count);
 
                 foreach (var currentEvent in events)
                 {
@@ -83,13 +91,13 @@ namespace OGame
                 if (_attacks.Count > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("{0} incoming attack(s) ", _attacks.Count);
+                    Console.WriteLine(DateTime.Now + " - {0} incoming attack(s) ", _attacks.Count);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
             else
             {
-                Console.WriteLine("There is no mission in space at the moment.");
+                Console.WriteLine(DateTime.Now + " - There is no mission in space at the moment.");
             }
 
             return _attacks;
@@ -109,43 +117,49 @@ namespace OGame
             var fleetTab = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
             fleetTab.Click();
 
-            var sendAllButton = _driver.FindElement(By.Id("sendall"));
-            sendAllButton.Click();
-
-            var continueButton1 = _driver.FindElement(By.Id("continue"));
-
-            if (continueButton1.GetAttribute("Class") == "on")
+            if (_driver.FindElements(By.Id("sendall")).Count > 0)
             {
-                continueButton1.Click();
+                var sendAllButton = _driver.FindElement(By.Id("sendall"));
+                sendAllButton.Click();
 
-                var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
-                usefulLinksSelect.Click();
+                var continueButton1 = _driver.FindElement(By.Id("continue"));
 
-                _wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
-                var firstPlanet = _driver.FindElement(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]"));
-                _planetDestinationWhileEscape = firstPlanet.Text;
-                firstPlanet.Click();
 
-                Thread.Sleep(300);
-                var continueButton2 = _driver.FindElement(By.Id("continue"));
-                continueButton2.Click();
+                if (continueButton1.GetAttribute("Class") == "on")
+                {
+                    continueButton1.Click();
 
-                _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
-                var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
-                stayOnThePlanetOption.Click();
+                    var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
+                    usefulLinksSelect.Click();
 
-                Thread.Sleep(300);
-                var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
-                packEverythingOnShips.Click();
+                    _wait.Until(
+                        ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
+                    var firstPlanet = _driver.FindElement(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]"));
+                    _planetDestinationWhileEscape = firstPlanet.Text;
+                    firstPlanet.Click();
 
-                var sendOutFleet = _driver.FindElement(By.Id("start"));
-                sendOutFleet.Click();
+                    Thread.Sleep(300);
+                    var continueButton2 = _driver.FindElement(By.Id("continue"));
+                    continueButton2.Click();
 
-                attack.safe = true;
+                    _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
+                    var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
+                    stayOnThePlanetOption.Click();
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Fleet from {0} is safe and flies to {1}", attack.attackedPlanet, _planetDestinationWhileEscape);
-                Console.ForegroundColor = ConsoleColor.White;
+                    Thread.Sleep(300);
+                    var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
+                    packEverythingOnShips.Click();
+
+                    var sendOutFleet = _driver.FindElement(By.Id("start"));
+                    sendOutFleet.Click();
+
+                    attack.safe = true;
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine(DateTime.Now + " - Fleet from {0} is safe and flies to {1}",
+                        attack.attackedPlanet, _planetDestinationWhileEscape);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
         }
 
@@ -154,7 +168,10 @@ namespace OGame
             var fleetStatusButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/span/a"));
             fleetStatusButton.Click();
 
-            _planetDestinationWhileEscape = "[" + _planetDestinationWhileEscape.Split('[').Last();
+            if (_planetDestinationWhileEscape != null)
+            {
+                _planetDestinationWhileEscape = "[" + _planetDestinationWhileEscape.Split('[').Last();
+            }
 
             string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='" + _planetDestinationWhileEscape +
                                        "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet +
@@ -163,15 +180,19 @@ namespace OGame
             if (_driver.FindElements(By.XPath(returnButtonXpath)).Count != 0)
             {
                 var returnButton = _driver.FindElement(By.XPath(returnButtonXpath));
+
+                IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;
+                js.ExecuteScript("window.scrollTo(0, document.body.scrollHeight);");
+
                 returnButton.Click();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Fleet is flying back from {0} to planet {1}", _planetDestinationWhileEscape, attack.attackedPlanet);
+                Console.WriteLine(DateTime.Now + " - Fleet is flying back from {0} to planet {1}", _planetDestinationWhileEscape, attack.attackedPlanet);
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else
             {
-                Console.WriteLine("Unable to return fleet.");
+                Console.WriteLine(DateTime.Now + " - Unable to return fleet.");
             }
         }
 
@@ -195,8 +216,11 @@ namespace OGame
             return listOfPlanets;
         }
 
-        public bool CheckOfLoggedIn()
+        public bool CheckIfLoggedIn()
         {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)_driver;
+            js.ExecuteScript("window.scrollTo(0,0);");
+
             var logiLink = _driver.FindElement(By.Id("logoLink"));
             logiLink.Click();
 
