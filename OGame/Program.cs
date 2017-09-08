@@ -108,6 +108,9 @@ namespace OGame
 
                 if (game.GetAttacks().Count == 0)
                 {
+
+                    game.BuildBattleship();
+
                     driver.Quit();
                     //Random r = new Random();
                    // int randomSleepTime = r.Next(600000, 1000000);

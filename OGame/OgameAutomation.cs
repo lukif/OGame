@@ -234,5 +234,38 @@ namespace OGame
             }
         }
 
+        public void BuildBattleship()
+        {
+            foreach (var planet in GetPlanetList())
+            {
+                SelectPlanet(planet);
+
+                var shipyardButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[6]/a/span"));
+                shipyardButton.Click();
+
+                var selectBattleship = _driver.FindElement(By.XPath("//*[@id='military']/li[4]/div/div/a"));
+                if (!selectBattleship.GetAttribute("class").Contains("active"))
+                {
+                    selectBattleship.Click();
+                }
+
+                Thread.Sleep(2000);
+
+                string buildButtonXpath = "//*[@id='content']/div[3]/a[@class='build-it']";
+
+                if (_driver.FindElements(By.XPath(buildButtonXpath)).Count > 0)
+                {
+                    var numberOfShipsToBuild = _driver.FindElement(By.Id("number"));
+                    numberOfShipsToBuild.SendKeys("1");
+
+                    var build = _driver.FindElement(By.XPath(buildButtonXpath));
+                    build.Click();
+
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("{0} - started to build battleship on {1}.", DateTime.Now, planet);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+        }
     }
 }
