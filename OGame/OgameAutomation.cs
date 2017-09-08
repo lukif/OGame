@@ -243,12 +243,27 @@ namespace OGame
                 var shipyardButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[6]/a/span"));
                 shipyardButton.Click();
 
-                var selectBattleship = _driver.FindElement(By.XPath("//*[@id='military']/li[4]/div/div/a"));
-                if (!selectBattleship.GetAttribute("class").Contains("active"))
-                {
-                    selectBattleship.Click();
-                }
+                Thread.Sleep(3000);
 
+                if (_driver.FindElements(By.XPath("//*[@id='military']/li[4]/div/div/a")).Count > 0)
+                {
+                    var selectBattleship = _driver.FindElement(By.XPath("//*[@id='military']/li[4]/div/div/a"));
+
+                    if (!selectBattleship.GetAttribute("class").Contains("active"))
+                    {
+                        selectBattleship.Click();
+                    }
+                }
+                else if (_driver.FindElements(By.XPath("//*[@id='military']/li[4]/div/div/div/a[2]")).Count > 0)
+                {
+                    var selectBattleship = _driver.FindElement(By.XPath("//*[@id='military']/li[4]/div/div/div/a[2]"));
+
+                    if (!selectBattleship.GetAttribute("class").Contains("active"))
+                    {
+                        selectBattleship.Click();
+                    }
+                }
+                
                 Thread.Sleep(2000);
 
                 string buildButtonXpath = "//*[@id='content']/div[3]/a[@class='build-it']";
