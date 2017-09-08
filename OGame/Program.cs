@@ -108,16 +108,9 @@ namespace OGame
 
                 if (game.GetAttacks().Count == 0)
                 {
-
                     game.BuildBattleship();
 
                     driver.Quit();
-                    //Random r = new Random();
-                   // int randomSleepTime = r.Next(600000, 1000000);
-                   // string waitTo = DateTime.Now.AddSeconds(Math.Round((double) randomSleepTime / 1000)).ToString();
-                   // Console.WriteLine(DateTime.Now + " - Next check in: " +
-                  //                    Math.Round((double) randomSleepTime / 1000) + " seconds. (" + waitTo + ")");
-                  //  Thread.Sleep(randomSleepTime);
 
                     int currentMinute = DateTime.Now.Minute;
 
