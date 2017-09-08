@@ -282,5 +282,66 @@ namespace OGame
                 }
             }
         }
+
+        public void SendExpedition()
+        {
+            SelectPlanet(GetPlanetList().First());
+
+            Thread.Sleep(3000);
+
+            var fleetStatusButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
+            fleetStatusButton.Click();
+
+            Thread.Sleep(2000);
+
+            var destroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]"));
+            if (destroyer.GetAttribute("class").Contains("on"))
+            {
+                var selectDestroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]/input"));
+                selectDestroyer.SendKeys("1");
+            }
+
+            var bigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]"));
+            if (bigTransporter.GetAttribute("class").Contains("on"))
+            {
+                var selectBigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]/input"));
+                selectBigTransporter.SendKeys("150");
+            }
+
+            var sond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]"));
+            if (sond.GetAttribute("class").Contains("on"))
+            {
+                var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
+                selectSond.SendKeys("1");
+            }
+
+            var continueButton = _driver.FindElement(By.Id("continue"));
+            continueButton.Click();
+            Thread.Sleep(1000);
+
+            var system = _driver.FindElement(By.Id("system"));
+            system.SendKeys("331");
+
+            var position = _driver.FindElement(By.Id("position"));
+            position.SendKeys("16");
+
+            Thread.Sleep(500);
+
+            var continueButton2 = _driver.FindElement(By.Id("continue"));
+            continueButton2.Click();
+
+            Thread.Sleep(500);
+
+            var expeditionButton = _driver.FindElement(By.Id("missionButton15"));
+            expeditionButton.Click();
+
+            Thread.Sleep(100);
+            var start = _driver.FindElement(By.Id("start"));
+            start.Click();
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("{0} - Expeditoin sent", DateTime.Now);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 }

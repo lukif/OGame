@@ -29,8 +29,8 @@ namespace OGame
                 driver.Manage().Window.Maximize();
 
                 OgameAutomation game = new OgameAutomation(driver);
-
                 game.Login(user, password, server);
+                game.SendExpedition();
                 List<Attack> attacks = game.GetAttacks();
 
                 if (attacks.Count != 0)
@@ -108,11 +108,19 @@ namespace OGame
 
                 if (game.GetAttacks().Count == 0)
                 {
-                    game.BuildBattleship();
+                    int currentMinute = DateTime.Now.Minute;
+
+                    if (currentMinute == 1)
+                    {
+                        game.BuildBattleship();
+                    }
+
+                    if (DateTime.Now.Hour % 6 == 0 && currentMinute < 15)
+                    {
+                        game.SendExpedition();
+                    }
 
                     driver.Quit();
-
-                    int currentMinute = DateTime.Now.Minute;
 
                     while (currentMinute % 15 != 0)
                     {
