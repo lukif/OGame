@@ -129,6 +129,8 @@ namespace OGame
                 {
                     continueButton1.Click();
 
+                    Thread.Sleep(1000);
+
                     var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
                     usefulLinksSelect.Click();
 
@@ -138,7 +140,7 @@ namespace OGame
                     _planetDestinationWhileEscape = firstPlanet.Text;
                     firstPlanet.Click();
 
-                    Thread.Sleep(300);
+                    Thread.Sleep(500);
                     var continueButton2 = _driver.FindElement(By.Id("continue"));
                     continueButton2.Click();
 
@@ -146,7 +148,7 @@ namespace OGame
                     var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
                     stayOnThePlanetOption.Click();
 
-                    Thread.Sleep(300);
+                    Thread.Sleep(500);
                     var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
                     packEverythingOnShips.Click();
 
@@ -294,54 +296,66 @@ namespace OGame
 
             Thread.Sleep(2000);
 
-            var destroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]"));
-            if (destroyer.GetAttribute("class").Contains("on"))
+            var warning = _driver.FindElements(By.XPath("//*[@id='warning']/h3"));
+
+            if (warning.Count == 0)
             {
-                var selectDestroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]/input"));
-                selectDestroyer.SendKeys("1");
-            }
 
-            var bigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]"));
-            if (bigTransporter.GetAttribute("class").Contains("on"))
+                var destroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]"));
+                if (destroyer.GetAttribute("class").Contains("on"))
+                {
+                    var selectDestroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]/input"));
+                    selectDestroyer.SendKeys("1");
+                }
+
+                var bigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]"));
+                if (bigTransporter.GetAttribute("class").Contains("on"))
+                {
+                    var selectBigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]/input"));
+                    selectBigTransporter.SendKeys("150");
+                }
+
+                var sond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]"));
+                if (sond.GetAttribute("class").Contains("on"))
+                {
+                    var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
+                    selectSond.SendKeys("1");
+                }
+
+                var continueButton = _driver.FindElement(By.Id("continue"));
+                continueButton.Click();
+                Thread.Sleep(1000);
+
+                var system = _driver.FindElement(By.Id("system"));
+                system.SendKeys("331");
+
+                var position = _driver.FindElement(By.Id("position"));
+                position.SendKeys("16");
+
+                Thread.Sleep(500);
+
+                var continueButton2 = _driver.FindElement(By.Id("continue"));
+                continueButton2.Click();
+
+                Thread.Sleep(2000);
+
+                var expeditionButton = _driver.FindElement(By.Id("missionButton15"));
+                expeditionButton.Click();
+
+                Thread.Sleep(500);
+                var start = _driver.FindElement(By.Id("start"));
+                start.Click();
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("{0} - Expeditoin sent", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
             {
-                var selectBigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]/input"));
-                selectBigTransporter.SendKeys("150");
+                Console.ForegroundColor = ConsoleColor.DarkBlue;
+                Console.WriteLine("{0} - Curently there are no ships on the planet", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
             }
-
-            var sond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]"));
-            if (sond.GetAttribute("class").Contains("on"))
-            {
-                var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                selectSond.SendKeys("1");
-            }
-
-            var continueButton = _driver.FindElement(By.Id("continue"));
-            continueButton.Click();
-            Thread.Sleep(1000);
-
-            var system = _driver.FindElement(By.Id("system"));
-            system.SendKeys("331");
-
-            var position = _driver.FindElement(By.Id("position"));
-            position.SendKeys("16");
-
-            Thread.Sleep(500);
-
-            var continueButton2 = _driver.FindElement(By.Id("continue"));
-            continueButton2.Click();
-
-            Thread.Sleep(500);
-
-            var expeditionButton = _driver.FindElement(By.Id("missionButton15"));
-            expeditionButton.Click();
-
-            Thread.Sleep(100);
-            var start = _driver.FindElement(By.Id("start"));
-            start.Click();
-
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine("{0} - Expeditoin sent", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
