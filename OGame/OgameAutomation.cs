@@ -346,6 +346,8 @@ namespace OGame
                 var start = _driver.FindElement(By.Id("start"));
                 start.Click();
 
+                Thread.Sleep(3000);
+
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("{0} - Expeditoin sent", DateTime.Now);
                 Console.ForegroundColor = ConsoleColor.White;
