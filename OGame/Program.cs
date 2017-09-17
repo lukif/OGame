@@ -117,10 +117,11 @@ namespace OGame
 
                         if (currentMinute == 1)
                         {
-                            game.BuildBattleship();
+                            //game.BuildBattleship();
+                            game.BuildLightFighter();
                         }
 
-                        if (DateTime.Now.Hour % 3 == 0 && DateTime.Now.Minute < 15)
+                        if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15)
                         {
                             game.SendExpedition();
                         }

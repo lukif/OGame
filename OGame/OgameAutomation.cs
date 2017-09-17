@@ -273,7 +273,7 @@ namespace OGame
                 if (_driver.FindElements(By.XPath(buildButtonXpath)).Count > 0)
                 {
                     var numberOfShipsToBuild = _driver.FindElement(By.Id("number"));
-                    numberOfShipsToBuild.SendKeys("1");
+                    numberOfShipsToBuild.SendKeys("5");
 
                     var build = _driver.FindElement(By.XPath(buildButtonXpath));
                     build.Click();
@@ -284,6 +284,56 @@ namespace OGame
                 }
             }
         }
+
+        public void BuildLightFighter()
+        {
+            foreach (var planet in GetPlanetList())
+            {
+                SelectPlanet(planet);
+
+                var shipyardButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[6]/a/span"));
+                shipyardButton.Click();
+
+                Thread.Sleep(3000);
+
+                if (_driver.FindElements(By.XPath("//*[@id='military']/li[1]/div/div/a")).Count > 0)
+                {
+                    var selectLightFighter = _driver.FindElement(By.XPath("//*[@id='military']/li[1]/div/div/a"));
+
+                    if (!selectLightFighter.GetAttribute("class").Contains("active"))
+                    {
+                        selectLightFighter.Click();
+                    }
+                }
+                else if (_driver.FindElements(By.XPath("//*[@id='military']/li[1]/div/div/div/a[2]")).Count > 0)
+                {
+                    var selectBattleship = _driver.FindElement(By.XPath("//*[@id='military']/li[1]/div/div/div/a[2]"));
+
+                    if (!selectBattleship.GetAttribute("class").Contains("active"))
+                    {
+                        selectBattleship.Click();
+                    }
+                }
+
+                Thread.Sleep(2000);
+
+                string buildButtonXpath = "//*[@id='content']/div[3]/a[@class='build-it']";
+
+                if (_driver.FindElements(By.XPath(buildButtonXpath)).Count > 0)
+                {
+                    var numberOfShipsToBuild = _driver.FindElement(By.Id("number"));
+                    numberOfShipsToBuild.SendKeys("50");
+
+                    var build = _driver.FindElement(By.XPath(buildButtonXpath));
+                    build.Click();
+
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("{0} - started to build light fighter(s) on {1}.", DateTime.Now, planet);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+        }
+
 
         public void SendExpedition()
         {
@@ -326,8 +376,10 @@ namespace OGame
                 continueButton.Click();
                 Thread.Sleep(1000);
 
+                Random randomSystem = new Random();
+                string systemString = randomSystem.Next(330, 331).ToString();
                 var system = _driver.FindElement(By.Id("system"));
-                system.SendKeys("331");
+                system.SendKeys(systemString);
 
                 var position = _driver.FindElement(By.Id("position"));
                 position.SendKeys("16");
@@ -349,7 +401,7 @@ namespace OGame
                 Thread.Sleep(3000);
 
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("{0} - Expeditoin sent", DateTime.Now);
+                Console.WriteLine("{0} - Expeditoin sent to 3:{1}:16", DateTime.Now, systemString);
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else
