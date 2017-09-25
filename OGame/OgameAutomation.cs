@@ -362,14 +362,14 @@ namespace OGame
                 if (bigTransporter.GetAttribute("class").Contains("on"))
                 {
                     var selectBigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]/input"));
-                    selectBigTransporter.SendKeys("150");
+                    selectBigTransporter.SendKeys("220");
                 }
 
                 var sond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]"));
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("1");
+                    selectSond.SendKeys("300");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
@@ -377,7 +377,7 @@ namespace OGame
                 Thread.Sleep(1000);
 
                 Random randomSystem = new Random();
-                string systemString = randomSystem.Next(330, 331).ToString();
+                string systemString = randomSystem.Next(330, 332).ToString();
                 var system = _driver.FindElement(By.Id("system"));
                 system.SendKeys(systemString);
 

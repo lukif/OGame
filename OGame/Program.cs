@@ -118,7 +118,7 @@ namespace OGame
                         if (currentMinute == 1)
                         {
                             //game.BuildBattleship();
-                            game.BuildLightFighter();
+                            //game.BuildLightFighter();
                         }
 
                         if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15)
