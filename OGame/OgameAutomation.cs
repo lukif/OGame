@@ -273,7 +273,7 @@ namespace OGame
                 if (_driver.FindElements(By.XPath(buildButtonXpath)).Count > 0)
                 {
                     var numberOfShipsToBuild = _driver.FindElement(By.Id("number"));
-                    numberOfShipsToBuild.SendKeys("5");
+                    numberOfShipsToBuild.SendKeys("10");
 
                     var build = _driver.FindElement(By.XPath(buildButtonXpath));
                     build.Click();
@@ -335,7 +335,7 @@ namespace OGame
         }
 
 
-        public void SendExpedition()
+        public void SendExpedition(int randomSystemmMin, int randomSystemMax)
         {
             SelectPlanet(GetPlanetList().First());
 
@@ -369,7 +369,7 @@ namespace OGame
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("300");
+                    selectSond.SendKeys("100");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
@@ -377,7 +377,7 @@ namespace OGame
                 Thread.Sleep(1000);
 
                 Random randomSystem = new Random();
-                string systemString = randomSystem.Next(330, 332).ToString();
+                string systemString = randomSystem.Next(randomSystemmMin, randomSystemMax + 1).ToString();
                 var system = _driver.FindElement(By.Id("system"));
                 system.SendKeys(systemString);
 
