@@ -64,7 +64,6 @@ namespace OGame
             {
 
                 var expandEventsList = _driver.FindElement(By.Id("js_eventDetailsClosed"));
-                var expandEventsList2 = _driver.FindElement(By.Id("js_eventDetailsClosed"));
                 if (expandEventsList.Displayed)
                 {
                     expandEventsList.Click();
@@ -105,11 +104,6 @@ namespace OGame
 
         public void EscapeFromPlanet(Attack attack)
         {
-            // string coords = attack.attackedPlanet.Replace("[", "").Replace("]", "");
-            //string galaxy  = coords.Split(':')[0];
-            //string sunSystem = coords.Split(':')[1];
-            //string planetPosition = coords.Split(':')[2];
-
             SelectPlanet(attack.attackedPlanet);
 
             Thread.Sleep(1000);
@@ -135,8 +129,8 @@ namespace OGame
                     usefulLinksSelect.Click();
 
                     _wait.Until(
-                        ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]")));
-                    var firstPlanet = _driver.FindElement(By.XPath("//ul/li[2]/a[contains(., 'Columbo')]"));
+                        ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[3]/a[contains(., 'Columbo')]")));
+                    var firstPlanet = _driver.FindElement(By.XPath("//ul/li[3]/a[contains(., 'Columbo')]"));
                     _planetDestinationWhileEscape = firstPlanet.Text;
                     firstPlanet.Click();
 
@@ -201,6 +195,7 @@ namespace OGame
         public void SelectPlanet(string planetCoords)
         {
             string planetXPath = "//a[span='" + planetCoords + "']";
+
             var planetToSelect = _driver.FindElement(By.XPath(planetXPath));
             planetToSelect.Click();
         }

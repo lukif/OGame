@@ -34,6 +34,7 @@ namespace OGame
 
                     OgameAutomation game = new OgameAutomation(driver);
                     game.Login(user, password, server);
+
                     List<Attack> attacks = game.GetAttacks();
 
                     if (attacks.Count != 0)
