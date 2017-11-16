@@ -117,14 +117,15 @@ namespace OGame
 
                         if (currentMinute == 1)
                         {
-                            game.BuildBattleship();
+                            //game.BuildBattleship();
                             //game.BuildLightFighter();
                         }
 
                         if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15)
                         {
                             game.SendExpedition(330, 331);
-                            game.SendExpedition(328, 330);
+                            game.SendExpedition(328, 329);
+                            game.SendExpedition(332, 333);
                         }
 
                         driver.Quit();

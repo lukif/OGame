@@ -362,14 +362,14 @@ namespace OGame
                 if (bigTransporter.GetAttribute("class").Contains("on"))
                 {
                     var selectBigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]/input"));
-                    selectBigTransporter.SendKeys("220");
+                    selectBigTransporter.SendKeys("250");
                 }
 
                 var sond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]"));
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("100");
+                    selectSond.SendKeys("300");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
