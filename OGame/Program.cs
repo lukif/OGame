@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Selenium;
 using Selenium.Helper;
 using OpenQA.Selenium;
@@ -35,7 +36,13 @@ namespace OGame
                     OgameAutomation game = new OgameAutomation(driver);
                     game.Login(user, password, server);
 
+                    // FOR TEST
+                    //Attack a = new Attack("[3:333:3]", "[3:330:6]", "16:16:17");
+                    //game.EscapeFromPlanet(a);
+                    //game.BackOnPlanet(a);
+
                     List<Attack> attacks = game.GetAttacks();
+
 
                     if (attacks.Count != 0)
                     {

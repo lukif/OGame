@@ -128,9 +128,10 @@ namespace OGame
                     var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
                     usefulLinksSelect.Click();
 
-                    _wait.Until(
-                        ExpectedConditions.ElementToBeClickable(By.XPath("//ul/li[3]/a[contains(., 'Columbo')]")));
-                    var firstPlanet = _driver.FindElement(By.XPath("//ul/li[3]/a[contains(., 'Columbo')]"));
+                    //  //*[@id="dropdown457"]/li[last()]/a
+
+                    var firstPlanet = _driver.FindElements(By.XPath("//ul/li/a[contains(., 'Columbo')]")).First();
+                    _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
                     _planetDestinationWhileEscape = firstPlanet.Text;
                     firstPlanet.Click();
 
@@ -345,7 +346,6 @@ namespace OGame
 
             if (warning.Count == 0)
             {
-
                 var destroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]"));
                 if (destroyer.GetAttribute("class").Contains("on"))
                 {
@@ -364,7 +364,7 @@ namespace OGame
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("300");
+                    selectSond.SendKeys("50");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
