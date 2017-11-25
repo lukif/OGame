@@ -43,7 +43,6 @@ namespace OGame
 
                     List<Attack> attacks = game.GetAttacks();
 
-
                     if (attacks.Count != 0)
                     {
                         foreach (var attack in attacks)
@@ -114,10 +113,10 @@ namespace OGame
                         }
                     }
 
-                    if (!game.CheckIfLoggedIn())
-                    {
-                        game.Login(user, password, server);
-                    }
+                    //if (!game.CheckIfLoggedIn())
+                    //{
+                    //    game.Login(user, password, server);
+                    //}
 
                     if (game.GetAttacks().Count == 0)
                     {
@@ -129,12 +128,27 @@ namespace OGame
                             //game.BuildLightFighter();
                         }
 
-                        if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15)
+                        List<Expedition> expeditions = game.GetExpeditions();
+
+                        if (expeditions.Count < 3)
                         {
-                            game.SendExpedition(330, 331);
-                            game.SendExpedition(328, 329);
-                            game.SendExpedition(332, 333);
+                            int expeditionsCount = expeditions.Count;
+                            Random rand = new Random();
+          
+                            while (expeditionsCount < 3)
+                            {
+                                string system = rand.Next(328, 333).ToString();
+                                game.SendExpedition(system);
+                                expeditionsCount++;
+                            }
                         }
+
+                        //if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15)
+                        //{
+                        //    game.SendExpedition(330, 331);
+                        //    game.SendExpedition(328, 329);
+                        //    game.SendExpedition(332, 333);
+                        //}
 
                         driver.Quit();
 

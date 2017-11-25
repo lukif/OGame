@@ -20,6 +20,7 @@ namespace OGame
         private readonly string _OGameURL;
         private readonly WebDriverWait _wait;
         private List<Attack> _attacks;
+        private List<Expedition> _expeditions;
         private List<string> _listOfPlanets;
         private string _planetDestinationWhileEscape;
 
@@ -100,6 +101,42 @@ namespace OGame
             }
 
             return _attacks;
+        }
+
+        public List<Expedition> GetExpeditions()
+        {
+            _expeditions = new List<Expedition>();
+
+            if (_driver.FindElements(By.XPath("//*[@id='eventboxFilled']/p/p/span[contains(.,'Następna')]")).Count > 0)
+            {
+
+                var expandEventsList = _driver.FindElement(By.Id("js_eventDetailsClosed"));
+                if (expandEventsList.Displayed)
+                {
+                    expandEventsList.Click();
+                }
+                Thread.Sleep(1000);
+
+                _wait.Until(ExpectedConditions.ElementExists(By.Id("eventContent")));
+                var events = _driver.FindElements(By.XPath("//*[@id='eventContent']/tbody/tr"));
+
+                foreach (var currentEvent in events)
+                {
+                    var destinationPlanet = currentEvent.FindElement(By.XPath("./td[8]"));
+                    var destinationDirection = currentEvent.FindElement(By.XPath("./td[7]"));
+                    if (destinationPlanet.Text == "Ekspedycja" && destinationDirection.GetAttribute("class") == "icon_movement_reserve")
+                    {
+                        string system = currentEvent.FindElement(By.XPath("./td[9]")).Text;
+                        system = system.Split(':')[1];
+
+                        _expeditions.Add(new Expedition(system));
+                    }
+                }
+            }
+
+            Console.WriteLine("{0} - We have {1} expeditions in space.",DateTime.Now, _expeditions.Count);
+
+            return _expeditions;
         }
 
         public void EscapeFromPlanet(Attack attack)
@@ -331,7 +368,7 @@ namespace OGame
         }
 
 
-        public void SendExpedition(int randomSystemmMin, int randomSystemMax)
+        public void SendExpedition(string expeditionSystem)
         {
             SelectPlanet(GetPlanetList().First());
 
@@ -364,17 +401,15 @@ namespace OGame
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("50");
+                    selectSond.SendKeys("100");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
                 continueButton.Click();
                 Thread.Sleep(1000);
 
-                Random randomSystem = new Random();
-                string systemString = randomSystem.Next(randomSystemmMin, randomSystemMax + 1).ToString();
                 var system = _driver.FindElement(By.Id("system"));
-                system.SendKeys(systemString);
+                system.SendKeys(expeditionSystem);
 
                 var position = _driver.FindElement(By.Id("position"));
                 position.SendKeys("16");
@@ -396,7 +431,7 @@ namespace OGame
                 Thread.Sleep(3000);
 
                 Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("{0} - Expeditoin sent to 3:{1}:16", DateTime.Now, systemString);
+                Console.WriteLine("{0} - Expeditoin sent to 3:{1}:16", DateTime.Now, expeditionSystem);
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else
