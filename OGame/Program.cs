@@ -30,7 +30,16 @@ namespace OGame
                 try
                 {
                     Console.WriteLine("\n" + DateTime.Now);
-                    ChromeDriver driver = new ChromeDriver();
+
+                     ChromeOptions options = new ChromeOptions();
+                    // options.AddArgument("--headless");
+                     options.AddArgument("--silent");
+                    // options.AddArgument("--disable-gpu");
+                    // options.AddArgument("--log-level=3");
+                     ChromeDriverService service = ChromeDriverService.CreateDefaultService();
+                     service.SuppressInitialDiagnosticInformation = true;
+
+                    ChromeDriver driver = new ChromeDriver(service, options);
                     driver.Manage().Window.Maximize();
 
                     OgameAutomation game = new OgameAutomation(driver);
@@ -146,12 +155,7 @@ namespace OGame
                             }
                         }
 
-                        //if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15)
-                        //{
-                        //    game.SendExpedition(330, 331);
-                        //    game.SendExpedition(328, 329);
-                        //    game.SendExpedition(332, 333);
-                        //}
+                        //if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15) {}
 
                         driver.Quit();
 

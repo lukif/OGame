@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.WebPages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -134,7 +135,21 @@ namespace OGame
                 }
             }
 
-            Console.WriteLine("{0} - We have {1} expeditions in space.",DateTime.Now, _expeditions.Count);
+            string exp = string.Empty;
+            if (_expeditions.Count > 0)
+            {
+
+                foreach (var expedition in _expeditions)
+                {
+                    if (!exp.IsEmpty())
+                    {
+                        exp += ", ";
+                    }
+                    exp += expedition.GetSystem();
+                }
+            }
+
+            Console.WriteLine("{0} - We have {1} expeditions in space ({2})",DateTime.Now, _expeditions.Count, exp);
 
             return _expeditions;
         }
