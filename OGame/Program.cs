@@ -42,9 +42,12 @@ namespace OGame
                     //game.BackOnPlanet(a);
 
                     List<Attack> attacks = game.GetAttacks();
+                    bool areWeAttacked = false;
 
                     if (attacks.Count != 0)
                     {
+                        areWeAttacked = true;
+
                         foreach (var attack in attacks)
                         {
                             string attackTime = attack.attackTime;
@@ -118,7 +121,7 @@ namespace OGame
                     //    game.Login(user, password, server);
                     //}
 
-                    if (game.GetAttacks().Count == 0)
+                    if (!areWeAttacked || game.GetAttacks().Count == 0)
                     {
                         int currentMinute = DateTime.Now.Minute;
 
@@ -163,7 +166,6 @@ namespace OGame
                     {
                         driver.Quit();
                     }
-
                 }
                 catch (Exception e)
                 {
