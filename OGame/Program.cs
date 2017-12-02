@@ -71,6 +71,13 @@ namespace OGame
 
                             var diffInSeconds = (attackTimeDT - now).TotalSeconds;
 
+                            if (diffInSeconds < 0)
+                            {
+                                attackTimeDT = new DateTime(now.Year, now.Month, now.Day+1, attackHour, attackMinute,
+                                    attackSecond);
+                                diffInSeconds = (attackTimeDT - now).TotalSeconds;
+                            }
+
                             while (diffInSeconds >= 60)
                             {
                                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -100,6 +107,13 @@ namespace OGame
 
                         var lastDiffInSeconds = (lastAttackTimeDT - now2).TotalSeconds;
 
+                        if (lastDiffInSeconds < 0)
+                        {
+                            lastAttackTimeDT = new DateTime(now2.Year, now2.Month, now2.Day+1, lastAttackHour,
+                                lastAttackMinute, lastAttackSecond);
+                            lastDiffInSeconds = (lastAttackTimeDT - now2).TotalSeconds;
+                        }
+
                         while (lastDiffInSeconds > 0)
                         {
                             Thread.Sleep(3000);
@@ -124,11 +138,6 @@ namespace OGame
                             game.BackOnPlanet(attack);
                         }
                     }
-
-                    //if (!game.CheckIfLoggedIn())
-                    //{
-                    //    game.Login(user, password, server);
-                    //}
 
                     if (!areWeAttacked || game.GetAttacks().Count == 0)
                     {

@@ -86,7 +86,33 @@ namespace OGame
                         string attacker = currentEvent.FindElement(By.XPath("./td[5]")).Text;
                         string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
 
-                        _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
+                        Thread.Sleep(2000);
+                        var toolTip = currentEvent.FindElement(By.XPath("./td[7]/span"));
+
+                        Actions action = new Actions(_driver);
+                        action.MoveToElement(toolTip).Perform();
+                        toolTip.Click();
+                        Thread.Sleep(500);
+
+                        var toolTipTable = _driver.FindElements(By.XPath("//div[3]/div/div[2]/table/tbody/tr"));
+
+                        bool spyAttack = false;
+
+                        if (toolTipTable.Count == 2)
+                        {
+                            if (toolTipTable[1].Text.Contains("Sonda"))
+                            {
+                                spyAttack = true;
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(DateTime.Now + " - Spy attack from {0}", attacker);
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                        }
+
+                        if (!spyAttack)
+                        {
+                            _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
+                        }
                     }
                 }
                 if (_attacks.Count > 0)
@@ -163,52 +189,62 @@ namespace OGame
             var fleetTab = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
             fleetTab.Click();
 
-            if (_driver.FindElements(By.Id("sendall")).Count > 0)
+            var noShipsOnPlanet = _driver.FindElements(By.XPath("//*[@id='warning']/h3"));
+            if (noShipsOnPlanet.Count == 0)
             {
-                var sendAllButton = _driver.FindElement(By.Id("sendall"));
-                sendAllButton.Click();
-
-                var continueButton1 = _driver.FindElement(By.Id("continue"));
-
-
-                if (continueButton1.GetAttribute("Class") == "on")
+                if (_driver.FindElements(By.Id("sendall")).Count > 0)
                 {
-                    continueButton1.Click();
+                    var sendAllButton = _driver.FindElement(By.Id("sendall"));
+                    sendAllButton.Click();
 
-                    Thread.Sleep(1000);
+                    var continueButton1 = _driver.FindElement(By.Id("continue"));
 
-                    var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
-                    usefulLinksSelect.Click();
+                    if (continueButton1.GetAttribute("Class") == "on")
+                    {
+                        continueButton1.Click();
 
-                    //  //*[@id="dropdown457"]/li[last()]/a
+                        Thread.Sleep(1000);
 
-                    var firstPlanet = _driver.FindElements(By.XPath("//ul/li/a[contains(., 'Columbo')]")).First();
-                    _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
-                    _planetDestinationWhileEscape = firstPlanet.Text;
-                    firstPlanet.Click();
+                        var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
+                        usefulLinksSelect.Click();
 
-                    Thread.Sleep(500);
-                    var continueButton2 = _driver.FindElement(By.Id("continue"));
-                    continueButton2.Click();
+                        var firstPlanet = _driver.FindElements(By.XPath("//ul/li/a[contains(., 'Columbo')]")).First();
+                        _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
+                        _planetDestinationWhileEscape = firstPlanet.Text;
+                        firstPlanet.Click();
 
-                    _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
-                    var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
-                    stayOnThePlanetOption.Click();
+                        var speed10 = _driver.FindElement(By.XPath("//*[@id='speedLinks']/a[1]"));
+                        speed10.Click();
 
-                    Thread.Sleep(500);
-                    var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
-                    packEverythingOnShips.Click();
+                        Thread.Sleep(500);
+                        var continueButton2 = _driver.FindElement(By.Id("continue"));
+                        continueButton2.Click();
 
-                    var sendOutFleet = _driver.FindElement(By.Id("start"));
-                    sendOutFleet.Click();
+                        _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
+                        var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
+                        stayOnThePlanetOption.Click();
 
-                    attack.safe = true;
+                        Thread.Sleep(500);
+                        var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
+                        packEverythingOnShips.Click();
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine(DateTime.Now + " - Fleet from {0} is safe and flies to {1}",
-                        attack.attackedPlanet, _planetDestinationWhileEscape);
-                    Console.ForegroundColor = ConsoleColor.White;
+                        var sendOutFleet = _driver.FindElement(By.Id("start"));
+                        sendOutFleet.Click();
+
+                        attack.safe = true;
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine(DateTime.Now + " - Fleet from {0} is safe and flies to {1}",
+                            attack.attackedPlanet, _planetDestinationWhileEscape);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                 }
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(DateTime.Now + " - There is no ship on {0}", attack.attackedPlanet);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
