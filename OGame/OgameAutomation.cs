@@ -197,6 +197,12 @@ namespace OGame
                     var sendAllButton = _driver.FindElement(By.Id("sendall"));
                     sendAllButton.Click();
 
+                    //var leaveSmallShips = _driver.FindElement(By.XPath("//div[@id='battleships']/ul/li"));
+                    //if (leaveSmallShips.GetAttribute("class") == "off")
+                    //{
+
+                    //}
+
                     var continueButton1 = _driver.FindElement(By.Id("continue"));
 
                     if (continueButton1.GetAttribute("Class") == "on")
@@ -438,7 +444,7 @@ namespace OGame
                 if (destroyer.GetAttribute("class").Contains("on"))
                 {
                     var selectDestroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]/input"));
-                    selectDestroyer.SendKeys("1");
+                    selectDestroyer.SendKeys("10");
                 }
 
                 var bigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]"));
@@ -452,7 +458,7 @@ namespace OGame
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("100");
+                    selectSond.SendKeys("200");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
