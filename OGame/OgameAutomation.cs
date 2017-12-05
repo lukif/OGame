@@ -444,7 +444,7 @@ namespace OGame
                 if (destroyer.GetAttribute("class").Contains("on"))
                 {
                     var selectDestroyer = _driver.FindElement(By.XPath("//*[@id='military']/li[7]/input"));
-                    selectDestroyer.SendKeys("10");
+                    selectDestroyer.SendKeys("1");
                 }
 
                 var bigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]"));
@@ -462,34 +462,44 @@ namespace OGame
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
-                continueButton.Click();
-                Thread.Sleep(1000);
 
-                var system = _driver.FindElement(By.Id("system"));
-                system.SendKeys(expeditionSystem);
+                if (continueButton.GetAttribute("class").Contains("on"))
+                {
+                    continueButton.Click();
+                    Thread.Sleep(1000);
 
-                var position = _driver.FindElement(By.Id("position"));
-                position.SendKeys("16");
+                    var system = _driver.FindElement(By.Id("system"));
+                    system.SendKeys(expeditionSystem);
 
-                Thread.Sleep(500);
+                    var position = _driver.FindElement(By.Id("position"));
+                    position.SendKeys("16");
 
-                var continueButton2 = _driver.FindElement(By.Id("continue"));
-                continueButton2.Click();
+                    Thread.Sleep(500);
 
-                Thread.Sleep(2000);
+                    var continueButton2 = _driver.FindElement(By.Id("continue"));
+                    continueButton2.Click();
 
-                var expeditionButton = _driver.FindElement(By.Id("missionButton15"));
-                expeditionButton.Click();
+                    Thread.Sleep(2000);
 
-                Thread.Sleep(500);
-                var start = _driver.FindElement(By.Id("start"));
-                start.Click();
+                    var expeditionButton = _driver.FindElement(By.Id("missionButton15"));
+                    expeditionButton.Click();
 
-                Thread.Sleep(3000);
+                    Thread.Sleep(500);
+                    var start = _driver.FindElement(By.Id("start"));
+                    start.Click();
 
-                Console.ForegroundColor = ConsoleColor.Blue;
-                Console.WriteLine("{0} - Expeditoin sent to 3:{1}:16", DateTime.Now, expeditionSystem);
-                Console.ForegroundColor = ConsoleColor.White;
+                    Thread.Sleep(3000);
+
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("{0} - Expeditoin sent to 3:{1}:16", DateTime.Now, expeditionSystem);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.WriteLine("{0} - Unable to send expedition - Fleet limit achieved", DateTime.Now);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
             }
             else
             {
