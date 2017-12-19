@@ -17,6 +17,8 @@ namespace OGame
 {
     class OgameAutomation
     {
+        string partOfPlanetName = ConfigurationManager.AppSettings["partOfPlanetName"];
+
         private readonly ChromeDriver _driver;
         private readonly string _OGameURL;
         private readonly WebDriverWait _wait;
@@ -214,7 +216,7 @@ namespace OGame
                         var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
                         usefulLinksSelect.Click();
 
-                        var firstPlanet = _driver.FindElements(By.XPath("//ul/li/a[contains(., 'Columbo')]")).First();
+                        var firstPlanet = _driver.FindElements(By.XPath("//ul/li/a[contains(., '" + partOfPlanetName  + "')]")).First();
                         _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
                         _planetDestinationWhileEscape = firstPlanet.Text;
                         firstPlanet.Click();
@@ -306,6 +308,21 @@ namespace OGame
             }
 
             return listOfPlanets;
+        }
+
+
+        public List<string> GetMoonList()
+        {
+            // //*[@id="planet-33697388"]/a[2]/img
+            var moons = _driver.FindElements(By.XPath("//*[@id='planetList']/div/a/span[2]"));
+            List<string> listOfMoons = new List<string>();
+
+            foreach (var moon in moons)
+            {
+                listOfMoons.Add(moon.Text);
+            }
+
+            return listOfMoons;
         }
 
         public bool CheckIfLoggedIn()
@@ -458,7 +475,7 @@ namespace OGame
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("200");
+                    selectSond.SendKeys("50");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));

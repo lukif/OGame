@@ -46,12 +46,14 @@ namespace OGame
                     game.Login(user, password, server);
 
                     // FOR TEST
-                    //Attack a = new Attack("[3:333:3]", "[3:330:6]", "16:16:17");
+                    //Attack a = new Attack("[3:333:3]", "[3:330:6]", "00:34:18");
                     //game.EscapeFromPlanet(a);
                     //game.BackOnPlanet(a);
 
                     List<Attack> attacks = game.GetAttacks();
                     bool areWeAttacked = false;
+
+                    //attacks.Add(a);
 
                     if (attacks.Count != 0)
                     {
@@ -59,6 +61,7 @@ namespace OGame
 
                         foreach (var attack in attacks)
                         {
+                            
                             string attackTime = attack.attackTime;
 
                             int attackHour = Convert.ToInt32(attackTime.Split(':')[0]);
