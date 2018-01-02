@@ -82,38 +82,48 @@ namespace OGame
                 foreach (var currentEvent in events)
                 {
                     var fromPlanet = currentEvent.FindElement(By.XPath("./td[5]"));
+                    var fromPlanetName = currentEvent.FindElement(By.XPath("./td[4]"));
                     if (!_listOfPlanets.Contains(fromPlanet.Text))
                     {
                         string attackTime = currentEvent.FindElement(By.XPath("./td[2]")).Text.Replace(" Czas", "");
                         string attacker = currentEvent.FindElement(By.XPath("./td[5]")).Text;
                         string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
 
-                        Thread.Sleep(2000);
-                        var toolTip = currentEvent.FindElement(By.XPath("./td[7]/span"));
-
-                        Actions action = new Actions(_driver);
-                        action.MoveToElement(toolTip).Perform();
-                        toolTip.Click();
-                        Thread.Sleep(500);
-
-                        var toolTipTable = _driver.FindElements(By.XPath("//div[3]/div/div[2]/table/tbody/tr"));
-
-                        bool spyAttack = false;
-
-                        if (toolTipTable.Count == 2)
+                        if (attacker != "[3:331:7]" && attacker != "[3:330:4]")
                         {
-                            if (toolTipTable[1].Text.Contains("Sonda"))
+                            Thread.Sleep(2000);
+                            var toolTip = currentEvent.FindElement(By.XPath("./td[7]/span"));
+
+                            Actions action = new Actions(_driver);
+                            action.MoveToElement(toolTip).Perform();
+                            toolTip.Click();
+                            Thread.Sleep(500);
+
+                            var toolTipTable = _driver.FindElements(By.XPath("//div[3]/div/div[2]/table/tbody/tr"));
+
+                            bool spyAttack = false;
+
+                            if (toolTipTable.Count == 2)
                             {
-                                spyAttack = true;
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine(DateTime.Now + " - Spy attack from {0}", attacker);
-                                Console.ForegroundColor = ConsoleColor.White;
+                                if (toolTipTable[1].Text.Contains("Sonda"))
+                                {
+                                    spyAttack = true;
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine(DateTime.Now + " - Spy attack from {0}", attacker);
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                }
+                            }
+
+                            if (!spyAttack)
+                            {
+                                _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
                             }
                         }
-
-                        if (!spyAttack)
+                        else
                         {
-                            _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
+                            Console.ForegroundColor = ConsoleColor.DarkYellow;
+                            Console.WriteLine(DateTime.Now + " - Transport from {0} detected", attacker);
+                            Console.ForegroundColor = ConsoleColor.White;
                         }
                     }
                 }
@@ -475,7 +485,7 @@ namespace OGame
                 if (sond.GetAttribute("class").Contains("on"))
                 {
                     var selectSond = _driver.FindElement(By.XPath("//*[@id='civil']/li[5]/input"));
-                    selectSond.SendKeys("50");
+                    selectSond.SendKeys("10");
                 }
 
                 var continueButton = _driver.FindElement(By.Id("continue"));
