@@ -26,6 +26,7 @@ namespace OGame
         private List<Expedition> _expeditions;
         private List<string> _listOfPlanets;
         private string _planetDestinationWhileEscape;
+        private List<int> planetResources;
 
 
         public OgameAutomation(ChromeDriver driver)
@@ -88,8 +89,9 @@ namespace OGame
                         string attackTime = currentEvent.FindElement(By.XPath("./td[2]")).Text.Replace(" Czas", "");
                         string attacker = currentEvent.FindElement(By.XPath("./td[5]")).Text;
                         string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
+                        string attackedPlenetMoon = currentEvent.FindElement(By.XPath("./td[8]")).Text;
 
-                        if (attacker != "[3:331:7]" && attacker != "[3:330:4]")
+                        if (attacker != "[3:331:7]" && attacker != "[3:330:40]")
                         {
                             Thread.Sleep(2000);
                             var toolTip = currentEvent.FindElement(By.XPath("./td[7]/span"));
@@ -116,7 +118,14 @@ namespace OGame
 
                             if (!spyAttack)
                             {
-                                _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
+                                if (attackedPlenetMoon.Contains("Columbo"))
+                                {
+                                    _attacks.Add(new Attack(attacker, attackedPlanet, attackTime));
+                                }
+                                else
+                                {
+                                    _attacks.Add(new Attack(attacker, attackedPlanet, attackTime, true));
+                                }
                             }
                         }
                         else
@@ -194,74 +203,98 @@ namespace OGame
 
         public void EscapeFromPlanet(Attack attack)
         {
-            SelectPlanet(attack.attackedPlanet);
-
-            Thread.Sleep(1000);
-
-            var fleetTab = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
-            fleetTab.Click();
-
-            var noShipsOnPlanet = _driver.FindElements(By.XPath("//*[@id='warning']/h3"));
-            if (noShipsOnPlanet.Count == 0)
+            bool escape = true;
+            if (!attack.moon)
             {
-                if (_driver.FindElements(By.Id("sendall")).Count > 0)
+                SelectPlanet(attack.attackedPlanet);
+            }
+            else if (attack.attackedPlanet.Contains("330:6"))
+            {
+                GoToFirstMoon(true);
+            }
+            else
+            {
+                escape = false;
+            }
+
+            if (escape)
+            {
+                Thread.Sleep(1000);
+
+                var fleetTab = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
+                fleetTab.Click();
+
+                var noShipsOnPlanet = _driver.FindElements(By.XPath("//*[@id='warning']/h3"));
+                if (noShipsOnPlanet.Count == 0)
                 {
-                    var sendAllButton = _driver.FindElement(By.Id("sendall"));
-                    sendAllButton.Click();
-
-                    //var leaveSmallShips = _driver.FindElement(By.XPath("//div[@id='battleships']/ul/li"));
-                    //if (leaveSmallShips.GetAttribute("class") == "off")
-                    //{
-
-                    //}
-
-                    var continueButton1 = _driver.FindElement(By.Id("continue"));
-
-                    if (continueButton1.GetAttribute("Class") == "on")
+                    if (_driver.FindElements(By.Id("sendall")).Count > 0)
                     {
-                        continueButton1.Click();
+                        var sendAllButton = _driver.FindElement(By.Id("sendall"));
+                        sendAllButton.Click();
 
-                        Thread.Sleep(1000);
+                        //var leaveSmallShips = _driver.FindElement(By.XPath("//div[@id='battleships']/ul/li"));
+                        //if (leaveSmallShips.GetAttribute("class") == "off")
+                        //{
 
-                        var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
-                        usefulLinksSelect.Click();
+                        //}
 
-                        var firstPlanet = _driver.FindElements(By.XPath("//ul/li/a[contains(., '" + partOfPlanetName  + "')]")).First();
-                        _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
-                        _planetDestinationWhileEscape = firstPlanet.Text;
-                        firstPlanet.Click();
+                        var continueButton1 = _driver.FindElement(By.Id("continue"));
 
-                        var speed10 = _driver.FindElement(By.XPath("//*[@id='speedLinks']/a[1]"));
-                        speed10.Click();
+                        if (continueButton1.GetAttribute("Class") == "on")
+                        {
+                            continueButton1.Click();
 
-                        Thread.Sleep(500);
-                        var continueButton2 = _driver.FindElement(By.Id("continue"));
-                        continueButton2.Click();
+                            Thread.Sleep(1000);
 
-                        _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
-                        var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
-                        stayOnThePlanetOption.Click();
+                            var usefulLinksSelect =
+                                _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
+                            usefulLinksSelect.Click();
 
-                        Thread.Sleep(500);
-                        var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
-                        packEverythingOnShips.Click();
+                            var firstPlanet = _driver
+                                .FindElements(By.XPath("//ul/li/a[contains(., '" + partOfPlanetName + "')]"))
+                                .First();
+                            _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
+                            _planetDestinationWhileEscape = firstPlanet.Text;
+                            firstPlanet.Click();
 
-                        var sendOutFleet = _driver.FindElement(By.Id("start"));
-                        sendOutFleet.Click();
+                            var speed10 = _driver.FindElement(By.XPath("//*[@id='speedLinks']/a[1]"));
+                            speed10.Click();
 
-                        attack.safe = true;
+                            Thread.Sleep(500);
+                            var continueButton2 = _driver.FindElement(By.Id("continue"));
+                            continueButton2.Click();
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(DateTime.Now + " - Fleet from {0} is safe and flies to {1}",
-                            attack.attackedPlanet, _planetDestinationWhileEscape);
-                        Console.ForegroundColor = ConsoleColor.White;
+                            _wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("missionButton4")));
+                            var stayOnThePlanetOption = _driver.FindElement(By.Id("missionButton4"));
+                            stayOnThePlanetOption.Click();
+
+                            Thread.Sleep(500);
+                            var packEverythingOnShips = _driver.FindElement(By.Id("allresources"));
+                            packEverythingOnShips.Click();
+
+                            var sendOutFleet = _driver.FindElement(By.Id("start"));
+                            sendOutFleet.Click();
+
+                            attack.safe = true;
+
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine(DateTime.Now + " - Fleet from {0} (Moon: {2}) is safe and flies to {1}",
+                                attack.attackedPlanet, _planetDestinationWhileEscape, attack.moon);
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
                     }
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine(DateTime.Now + " - There is no ship on {0}", attack.attackedPlanet);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
             }
             else
             {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(DateTime.Now + " - There is no ship on {0}", attack.attackedPlanet);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(DateTime.Now + " - Moon attacked on {0}", attack.attackedPlanet);
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -321,18 +354,24 @@ namespace OGame
         }
 
 
-        public List<string> GetMoonList()
+        public void GoToFirstMoon(bool attacked = false)
         {
-            // //*[@id="planet-33697388"]/a[2]/img
-            var moons = _driver.FindElements(By.XPath("//*[@id='planetList']/div/a/span[2]"));
-            List<string> listOfMoons = new List<string>();
-
-            foreach (var moon in moons)
+            if (!attacked)
             {
-                listOfMoons.Add(moon.Text);
+                var moon = _driver.FindElement(By.XPath("//*[@id='planetList']/div/a[2]"));
+                moon.Click();
             }
+            else
+            {
+                var moon = _driver.FindElement(By.XPath("//*[@id='planetList']/div/a[3]"));
+                moon.Click();
+            }
+        }
 
-            return listOfMoons;
+        public void GoToMoon()
+        {
+            var moon = _driver.FindElement(By.XPath("//*[@id='planetList']/div/a[2]"));
+            moon.Click();
         }
 
         public bool CheckIfLoggedIn()
@@ -352,6 +391,92 @@ namespace OGame
                 return true;
             }
         }
+
+        public List<int> GetPlanetResources()
+        {
+            planetResources = new List<int>();
+
+            int metal = Convert.ToInt32(_driver.FindElement(By.Id("resources_metal")).Text.Replace(".",""));
+            int crystal = Convert.ToInt32(_driver.FindElement(By.Id("resources_crystal")).Text.Replace(".", ""));
+            int deuterium = Convert.ToInt32(_driver.FindElement(By.Id("resources_deuterium")).Text.Replace(".", ""));
+
+            planetResources.Add(metal);
+            planetResources.Add(crystal);
+            planetResources.Add(deuterium);
+
+            return planetResources;
+        }
+
+        public void SendResourcesToFirstPlanet(int metal, int crystal, int deuter)
+        {
+            int transporters = Math.Abs((metal + crystal + deuter) / 25000) + 1;
+
+            var fleetStatusButton1 = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
+            fleetStatusButton1.Click();
+
+            Thread.Sleep(2000);
+
+            var warning1 = _driver.FindElements(By.XPath("//*[@id='warning']/h3"));
+
+            if (warning1.Count == 0)
+            {
+                var bigTransporter1 = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]"));
+                if (bigTransporter1.GetAttribute("class").Contains("on"))
+                {
+                    var selectBigTransporter = _driver.FindElement(By.XPath("//*[@id='civil']/li[2]/input"));
+                    selectBigTransporter.SendKeys(transporters.ToString());
+                }
+
+                var continueButton1 = _driver.FindElement(By.Id("continue"));
+
+                if (continueButton1.GetAttribute("class").Contains("on"))
+                {
+                    continueButton1.Click();
+                    Thread.Sleep(1000);
+
+                    var usefulLinksSelect = _driver.FindElement(By.XPath("//*[@id='shortcuts']/div[1]/div/span/a"));
+                    usefulLinksSelect.Click();
+
+                    var firstPlanet = _driver
+                        .FindElements(By.XPath("//ul/li/a[contains(., '" + partOfPlanetName + "')]"))
+                        .First();
+                    _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
+                    _planetDestinationWhileEscape = firstPlanet.Text;
+                    firstPlanet.Click();
+
+                    Thread.Sleep(500);
+
+                    var continueButton2 = _driver.FindElement(By.Id("continue"));
+                    continueButton2.Click();
+
+                    Thread.Sleep(2000);
+
+                    var transportButton = _driver.FindElement(By.Id("missionButton3"));
+                    transportButton.Click();
+
+                    var maxMetal = _driver.FindElement(By.XPath("//*[@id='resources']/div[1]/div[2]/a[2]"));
+                    maxMetal.Click();
+                    var maxCrystal = _driver.FindElement(By.XPath("//*[@id='resources']/div[2]/div[2]/a[2]"));
+                    maxCrystal.Click();
+                    if (deuter > 60000)
+                    {
+                        var deuterium = _driver.FindElement(By.Id("deuterium"));
+                        deuterium.SendKeys((deuter - 60000).ToString());
+                    }
+
+                    Thread.Sleep(500);
+                    var start = _driver.FindElement(By.Id("start"));
+                    start.Click();
+
+                    Thread.Sleep(3000);
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("{0} - Resources ({1}, {2}, {3}) sent to planet", DateTime.Now, metal, crystal, deuter);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+        }
+
 
         public void BuildBattleship()
         {
@@ -454,7 +579,8 @@ namespace OGame
 
         public void SendExpedition(string expeditionSystem)
         {
-            SelectPlanet(GetPlanetList().First());
+            //SelectPlanet(GetPlanetList().First());
+            GoToFirstMoon();
 
             Thread.Sleep(3000);
 

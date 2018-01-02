@@ -156,6 +156,15 @@ namespace OGame
 
                         if (expeditions.Count < 3)
                         {
+                            game.GoToFirstMoon();
+
+                            List<int> resources = game.GetPlanetResources();
+
+                            if (resources[0] > 0 || resources[1] > 0 || resources[2] > 60000)
+                            {
+                                game.SendResourcesToFirstPlanet(resources[0], resources[1], resources[2]);
+                            }
+
                             int expeditionsCount = expeditions.Count;
                             Random rand = new Random();
           
@@ -165,6 +174,8 @@ namespace OGame
                                 game.SendExpedition(system);
                                 expeditionsCount++;
                             }
+
+
                         }
 
                         //if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15) {}
