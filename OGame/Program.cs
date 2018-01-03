@@ -54,14 +54,34 @@ namespace OGame
                     bool areWeAttacked = false;
 
                     //attacks.Add(a);
-
+                    double timeToFirstAttack = 9999;
                     if (attacks.Count != 0)
+                    {
+                        int attackHour = Convert.ToInt32(attacks.First().attackTime.Split(':')[0]);
+                        int attackMinute = Convert.ToInt32(attacks.First().attackTime.Split(':')[1]);
+                        int attackSecond = Convert.ToInt32(attacks.First().attackTime.Split(':')[2]);
+
+                        DateTime now = DateTime.Now;
+                        DateTime attackTimeDT = new DateTime(now.Year, now.Month, now.Day, attackHour, attackMinute,
+                            attackSecond);
+
+                        timeToFirstAttack = (attackTimeDT - now).TotalSeconds;
+
+                        if (timeToFirstAttack < 0)
+                        {
+                            attackTimeDT = new DateTime(now.Year, now.Month, now.Day + 1, attackHour, attackMinute,
+                                attackSecond);
+                            timeToFirstAttack = (attackTimeDT - now).TotalSeconds;
+                        }
+                    }
+
+                    if (attacks.Count != 0 && timeToFirstAttack <= 660)
                     {
                         areWeAttacked = true;
 
                         foreach (var attack in attacks)
                         {
-                            
+
                             string attackTime = attack.attackTime;
 
                             int attackHour = Convert.ToInt32(attackTime.Split(':')[0]);
@@ -76,7 +96,7 @@ namespace OGame
 
                             if (diffInSeconds < 0)
                             {
-                                attackTimeDT = new DateTime(now.Year, now.Month, now.Day+1, attackHour, attackMinute,
+                                attackTimeDT = new DateTime(now.Year, now.Month, now.Day + 1, attackHour, attackMinute,
                                     attackSecond);
                                 diffInSeconds = (attackTimeDT - now).TotalSeconds;
                             }
@@ -84,7 +104,8 @@ namespace OGame
                             while (diffInSeconds >= 60)
                             {
                                 Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine(DateTime.Now + " - Time to atttack: {0}s", Math.Round(diffInSeconds));
+                                Console.WriteLine(DateTime.Now + " - Attacked planet: {0} Time to atttack: {1}s ({2})",
+                                    attack.attackedPlanet, Math.Round(diffInSeconds), attack.attackTime);
                                 Console.ForegroundColor = ConsoleColor.White;
                                 Thread.Sleep(5000);
                                 diffInSeconds = (attackTimeDT - DateTime.Now).TotalSeconds;
@@ -112,7 +133,7 @@ namespace OGame
 
                         if (lastDiffInSeconds < 0)
                         {
-                            lastAttackTimeDT = new DateTime(now2.Year, now2.Month, now2.Day+1, lastAttackHour,
+                            lastAttackTimeDT = new DateTime(now2.Year, now2.Month, now2.Day + 1, lastAttackHour,
                                 lastAttackMinute, lastAttackSecond);
                             lastDiffInSeconds = (lastAttackTimeDT - now2).TotalSeconds;
                         }
@@ -122,8 +143,8 @@ namespace OGame
                             Thread.Sleep(3000);
                             lastDiffInSeconds = (lastAttackTimeDT - DateTime.Now).TotalSeconds;
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("{0} - Waiting for the end of attack: {1}s", DateTime.Now,
-                                Math.Round(lastDiffInSeconds));
+                            Console.WriteLine("{0} - Waiting for the end of attack ({2}): {1}s", DateTime.Now,
+                                Math.Round(lastDiffInSeconds), attacks.Count);
                             Console.ForegroundColor = ConsoleColor.White;
                         }
 
@@ -141,6 +162,12 @@ namespace OGame
                             game.BackOnPlanet(attack);
                         }
                     }
+                    else if (timeToFirstAttack <= 660)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(DateTime.Now + " - Attack detected on {0} (Moon: {1}) in {2}.", attacks.First().attackedPlanet, attacks.First().moon, timeToFirstAttack);
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
 
                     if (!areWeAttacked || game.GetAttacks().Count == 0)
                     {
@@ -156,15 +183,6 @@ namespace OGame
 
                         if (expeditions.Count < 3)
                         {
-                            game.GoToFirstMoon();
-
-                            List<int> resources = game.GetPlanetResources();
-
-                            if (resources[0] > 0 || resources[1] > 0 || resources[2] > 60000)
-                            {
-                                game.SendResourcesToFirstPlanet(resources[0], resources[1], resources[2]);
-                            }
-
                             int expeditionsCount = expeditions.Count;
                             Random rand = new Random();
           
@@ -174,15 +192,22 @@ namespace OGame
                                 game.SendExpedition(system);
                                 expeditionsCount++;
                             }
+                        }
 
+                        game.GoToFirstMoon();
 
+                        List<int> resources = game.GetPlanetResources();
+
+                        if (resources[0] > 0 || resources[1] > 0 || resources[2] > 60000)
+                        {
+                            game.SendResourcesToFirstPlanet(resources[0], resources[1], resources[2]);
                         }
 
                         //if (DateTime.Now.Hour % 2 == 0 && DateTime.Now.Minute < 15) {}
 
                         driver.Quit();
 
-                        while (currentMinute % 15 != 0)
+                        while (currentMinute % 10 != 0)
                         {
                             Thread.Sleep(5000);
                             currentMinute = DateTime.Now.Minute;

@@ -139,7 +139,7 @@ namespace OGame
                 if (_attacks.Count > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(DateTime.Now + " - {0} incoming attack(s) ", _attacks.Count);
+                    Console.WriteLine(DateTime.Now + " - {0} incoming attack(s). First on {1} (Moon: {2})", _attacks.Count, _attacks.First().attackedPlanet, _attacks.First().moon);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
@@ -409,7 +409,7 @@ namespace OGame
 
         public void SendResourcesToFirstPlanet(int metal, int crystal, int deuter)
         {
-            int transporters = Math.Abs((metal + crystal + deuter) / 25000) + 1;
+            int transporters = Math.Abs((metal + crystal + (deuter - 60000)) / 25000) + 1;
 
             var fleetStatusButton1 = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
             fleetStatusButton1.Click();
@@ -458,10 +458,13 @@ namespace OGame
                     maxMetal.Click();
                     var maxCrystal = _driver.FindElement(By.XPath("//*[@id='resources']/div[2]/div[2]/a[2]"));
                     maxCrystal.Click();
-                    if (deuter > 60000)
+
+                    int deuterToSend = 0;
+                    if (deuter > 70000)
                     {
                         var deuterium = _driver.FindElement(By.Id("deuterium"));
-                        deuterium.SendKeys((deuter - 60000).ToString());
+                        deuterToSend = deuter - 70000;
+                        deuterium.SendKeys((deuterToSend).ToString());
                     }
 
                     Thread.Sleep(500);
@@ -471,7 +474,7 @@ namespace OGame
                     Thread.Sleep(3000);
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("{0} - Resources ({1}, {2}, {3}) sent to planet", DateTime.Now, metal, crystal, deuter);
+                    Console.WriteLine("{0} - Resources ({1}, {2}, {3}) sent to planet", DateTime.Now, metal, crystal, deuterToSend);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
