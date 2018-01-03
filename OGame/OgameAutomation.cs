@@ -91,7 +91,7 @@ namespace OGame
                         string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
                         string attackedPlenetMoon = currentEvent.FindElement(By.XPath("./td[8]")).Text;
 
-                        if (attacker != "[3:331:7]" && attacker != "[3:330:4]")
+                        if (attacker != "[3:331:70]" && attacker != "[3:330:40]")
                         {
                             Thread.Sleep(2000);
                             var toolTip = currentEvent.FindElement(By.XPath("./td[7]/span"));

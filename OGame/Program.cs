@@ -200,7 +200,14 @@ namespace OGame
                             }
                         }
 
-                        game.GoToFirstMoon();
+                        if (attacks.Count != 0)
+                        {
+                            game.GoToFirstMoon(true);
+                        }
+                        else
+                        {
+                            game.GoToFirstMoon();
+                        }  
 
                         List<int> resources = game.GetPlanetResources();
 
