@@ -25,7 +25,7 @@ namespace OGame
         private List<Attack> _attacks;
         private List<Expedition> _expeditions;
         private List<string> _listOfPlanets;
-        private string _planetDestinationWhileEscape;
+        private List<string> _planetDestinationWhileEscape = new List<string>();
         private List<int> planetResources;
 
 
@@ -232,6 +232,9 @@ namespace OGame
                         var sendAllButton = _driver.FindElement(By.Id("sendall"));
                         sendAllButton.Click();
 
+                        //var malymysliwiec = _driver.FindElement(By.XPath("//*[@id='military']/li/input"));
+                        //malymysliwiec.SendKeys("1");
+
                         //var leaveSmallShips = _driver.FindElement(By.XPath("//div[@id='battleships']/ul/li"));
                         //if (leaveSmallShips.GetAttribute("class") == "off")
                         //{
@@ -254,7 +257,7 @@ namespace OGame
                                 .FindElements(By.XPath("//ul/li/a[contains(., '" + partOfPlanetName + "')]"))
                                 .First();
                             _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
-                            _planetDestinationWhileEscape = firstPlanet.Text;
+                            _planetDestinationWhileEscape.Add(firstPlanet.Text);
                             firstPlanet.Click();
 
                             var speed10 = _driver.FindElement(By.XPath("//*[@id='speedLinks']/a[1]"));
@@ -279,7 +282,7 @@ namespace OGame
 
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine(DateTime.Now + " - Fleet from {0} (Moon: {2}) is safe and flies to {1}",
-                                attack.attackedPlanet, _planetDestinationWhileEscape, attack.moon);
+                                attack.attackedPlanet, _planetDestinationWhileEscape.Last(), attack.moon);
                             Console.ForegroundColor = ConsoleColor.White;
                         }
                     }
@@ -301,17 +304,21 @@ namespace OGame
 
         public void BackOnPlanet(Attack attack)
         {
-            var fleetStatusButton = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/span/a"));
-            fleetStatusButton.Click();
+            _driver.Navigate().GoToUrl("https://s146-pl.ogame.gameforge.com/game/index.php?page=movement");
 
-            if (_planetDestinationWhileEscape != null)
+            _wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//*[@id='inhalt']/div[4]/span[1]/a/span[2]")));
+
+            if (_planetDestinationWhileEscape.Count > 0)
             {
-                _planetDestinationWhileEscape = "[" + _planetDestinationWhileEscape.Split('[').Last();
+                _planetDestinationWhileEscape[0] = "[" + _planetDestinationWhileEscape.First().Split('[').Last();
             }
 
-            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='" + _planetDestinationWhileEscape +
+            string returnButtonXpath = "//div[span='Stacjonuj']/span[11]/span[a='" + _planetDestinationWhileEscape.First() +
                                        "']/../../span[5]/span[1]/a[contains(., '" + attack.attackedPlanet +
                                        "')]/../../../span[9]/a";
+
+            var aaaaa = _driver.FindElements(By.XPath(returnButtonXpath));
+            Console.WriteLine(aaaaa.Count);
 
             if (_driver.FindElements(By.XPath(returnButtonXpath)).Count != 0)
             {
@@ -323,8 +330,9 @@ namespace OGame
                 returnButton.Click();
 
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine(DateTime.Now + " - Fleet is flying back from {0} to planet {1}", _planetDestinationWhileEscape, attack.attackedPlanet);
+                Console.WriteLine(DateTime.Now + " - Fleet is flying back from {0} to planet {1}", _planetDestinationWhileEscape.First(), attack.attackedPlanet);
                 Console.ForegroundColor = ConsoleColor.White;
+                _planetDestinationWhileEscape.RemoveAt(0);
             }
             else
             {
@@ -441,7 +449,7 @@ namespace OGame
                         .FindElements(By.XPath("//ul/li/a[contains(., '" + partOfPlanetName + "')]"))
                         .First();
                     _wait.Until(ExpectedConditions.ElementToBeClickable(firstPlanet));
-                    _planetDestinationWhileEscape = firstPlanet.Text;
+                    _planetDestinationWhileEscape.Add(firstPlanet.Text);
                     firstPlanet.Click();
 
                     Thread.Sleep(500);

@@ -46,9 +46,15 @@ namespace OGame
                     game.Login(user, password, server);
 
                     // FOR TEST
-                    //Attack a = new Attack("[3:333:3]", "[3:330:6]", "00:34:18");
+                    //Attack a = new Attack("[3:333:3]", "[3:330:6]", "17:21:30");
+                    //Attack b = new Attack("[3:333:3]", "[3:330:6]", "17:22:00", true);
+
                     //game.EscapeFromPlanet(a);
+                    //game.EscapeFromPlanet(b);
+
                     //game.BackOnPlanet(a);
+                    //game.CheckIfLoggedIn();
+                    //game.BackOnPlanet(b);
 
                     List<Attack> attacks = game.GetAttacks();
                     bool areWeAttacked = false;
@@ -198,7 +204,7 @@ namespace OGame
 
                         List<int> resources = game.GetPlanetResources();
 
-                        if (resources[0] > 0 || resources[1] > 0 || resources[2] > 60000)
+                        if (resources[0] > 0 || resources[1] > 0 || resources[2] > 70000)
                         {
                             game.SendResourcesToFirstPlanet(resources[0], resources[1], resources[2]);
                         }
