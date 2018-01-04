@@ -91,7 +91,7 @@ namespace OGame
                         string attackedPlanet = currentEvent.FindElement(By.XPath("./td[9]")).Text;
                         string attackedPlenetMoon = currentEvent.FindElement(By.XPath("./td[8]")).Text;
 
-                        if (attacker != "[3:331:70]" && attacker != "[3:330:40]")
+                        if (attacker != "[3:330:4]")
                         {
                             Thread.Sleep(2000);
                             var toolTip = currentEvent.FindElement(By.XPath("./td[7]/span"));
@@ -139,7 +139,7 @@ namespace OGame
                 if (_attacks.Count > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(DateTime.Now + " - {0} incoming attack(s). First on {1} (Moon: {2})", _attacks.Count, _attacks.First().attackedPlanet, _attacks.First().moon);
+                    Console.WriteLine(DateTime.Now + " - {0} attack(s). First on {1} (Moon: {2}) - {3}", _attacks.Count, _attacks.First().attackedPlanet, _attacks.First().moon, _attacks.First().attackTime);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }
@@ -417,7 +417,15 @@ namespace OGame
 
         public void SendResourcesToFirstPlanet(int metal, int crystal, int deuter)
         {
-            int transporters = Math.Abs((metal + crystal + (deuter - 60000)) / 25000) + 1;
+            if (deuter > 70000)
+            {
+                deuter -= 70000;
+            }
+            else
+            {
+                deuter = 0;
+            }
+            int transporters = Math.Abs((metal + crystal + deuter) / 25000);
 
             var fleetStatusButton1 = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
             fleetStatusButton1.Click();
