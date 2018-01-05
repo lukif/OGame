@@ -201,6 +201,20 @@ namespace OGame
             return _expeditions;
         }
 
+        public bool CheckIfAdmiralEnabled()
+        {
+            var admiral =_driver.FindElement(By.XPath("//*[@id='officers']/a[2]"));
+
+            if (admiral.GetAttribute("class").Contains(" on "))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void EscapeFromPlanet(Attack attack)
         {
             bool escape = true;
@@ -417,7 +431,7 @@ namespace OGame
 
         public void SendResourcesToFirstPlanet(int metal, int crystal, int deuter)
         {
-            if (deuter > 70000)
+            if (deuter >= 70000)
             {
                 deuter -= 70000;
             }
@@ -425,7 +439,7 @@ namespace OGame
             {
                 deuter = 0;
             }
-            int transporters = Math.Abs((metal + crystal + deuter) / 25000);
+            int transporters = Math.Abs((metal + crystal + deuter) / 25000) + 1;
 
             var fleetStatusButton1 = _driver.FindElement(By.XPath("//*[@id='menuTable']/li[8]/a"));
             fleetStatusButton1.Click();
@@ -475,13 +489,9 @@ namespace OGame
                     var maxCrystal = _driver.FindElement(By.XPath("//*[@id='resources']/div[2]/div[2]/a[2]"));
                     maxCrystal.Click();
 
-                    int deuterToSend = 0;
-                    if (deuter > 70000)
-                    {
-                        var deuterium = _driver.FindElement(By.Id("deuterium"));
-                        deuterToSend = deuter - 70000;
-                        deuterium.SendKeys((deuterToSend).ToString());
-                    }
+                    var deuterium = _driver.FindElement(By.Id("deuterium"));
+                    deuterium.SendKeys((deuter).ToString());
+                    
 
                     Thread.Sleep(500);
                     var start = _driver.FindElement(By.Id("start"));
@@ -490,7 +500,7 @@ namespace OGame
                     Thread.Sleep(3000);
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("{0} - Resources ({1}, {2}, {3}) sent to planet", DateTime.Now, metal, crystal, deuterToSend);
+                    Console.WriteLine("{0} - Resources ({1}, {2}, {3}) sent to planet", DateTime.Now, metal, crystal, deuter);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             }

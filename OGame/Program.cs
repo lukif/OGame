@@ -191,8 +191,14 @@ namespace OGame
                         {
                             int expeditionsCount = expeditions.Count;
                             Random rand = new Random();
-          
-                            while (expeditionsCount < 3)
+
+                            int numberOfExpeditionToSend = 3;
+                            if (game.CheckIfAdmiralEnabled())
+                            {
+                                numberOfExpeditionToSend = 4;
+                            }
+
+                            while (expeditionsCount < numberOfExpeditionToSend)
                             {
                                 string system = rand.Next(328, 333).ToString();
                                 game.SendExpedition(system);
