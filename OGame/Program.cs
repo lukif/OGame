@@ -187,16 +187,16 @@ namespace OGame
 
                         List<Expedition> expeditions = game.GetExpeditions();
 
-                        if (expeditions.Count < 3)
+                        int numberOfExpeditionToSend = 3;
+                        if (game.CheckIfAdmiralEnabled())
+                        {
+                            numberOfExpeditionToSend = 4;
+                        }
+
+                        if (expeditions.Count < numberOfExpeditionToSend)
                         {
                             int expeditionsCount = expeditions.Count;
                             Random rand = new Random();
-
-                            int numberOfExpeditionToSend = 3;
-                            if (game.CheckIfAdmiralEnabled())
-                            {
-                                numberOfExpeditionToSend = 4;
-                            }
 
                             while (expeditionsCount < numberOfExpeditionToSend)
                             {
