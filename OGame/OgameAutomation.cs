@@ -431,9 +431,9 @@ namespace OGame
 
         public void SendResourcesToFirstPlanet(int metal, int crystal, int deuter)
         {
-            if (deuter >= 70000)
+            if (deuter >= 100000)
             {
-                deuter -= 70000;
+                deuter -= 100000;
             }
             else
             {

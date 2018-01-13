@@ -217,7 +217,7 @@ namespace OGame
 
                         List<int> resources = game.GetPlanetResources();
 
-                        if (resources[0] > 0 || resources[1] > 0 || resources[2] > 70000)
+                        if (resources[0] > 0 || resources[1] > 0 || resources[2] > 100000)
                         {
                             game.SendResourcesToFirstPlanet(resources[0], resources[1], resources[2]);
                         }
